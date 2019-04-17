@@ -39,3 +39,14 @@ class Memory:
         self.ReadMemory(self.pHandle, c_void_p(address), buffer, Memory.FLOAT, byref(fRead))
         result = struct.unpack('f', buffer[0: Memory.FLOAT])[0]
         return result
+    
+    def GetMultilevelPtr(self, base, offset_list):
+        '''
+            [int]       base:           Base address
+            [int list]  offset_list:    Offset list
+            [return] Pointer address 
+        '''
+        Address = self.readInteger(base)
+        for offset in offset_list:
+            Address = self.readInteger(Address)
+        return Address

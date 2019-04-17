@@ -110,9 +110,7 @@ class Game:
     def getFirstMonsterTotalHP(self):
         Address = Game.baseAddress + Game.MonsterOffset
         offsets = [0x6B8, 0x10, 0x120, 0x160]
-        aValue = self.MemoryReader.readInteger(Address)
-        for offset in offsets:
-            aValue = self.MemoryReader.readInteger(aValue + offset)
+        aValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         TotalHP = self.MemoryReader.readFloat(aValue + 0x290)
         self.PrimaryMonster.TotalHP = TotalHP if TotalHP > 0 else 0.0
         self.getPrimaryMonsterCurrentHP(aValue+0x290)
@@ -126,9 +124,7 @@ class Game:
     def getSecondMonsterTotalHP(self):
         Address = Game.baseAddress + Game.MonsterOffset
         offsets = [0x6B8, 0x8, 0xB8, 0x120]
-        aValue = self.MemoryReader.readInteger(Address)
-        for offset in offsets:
-            aValue = self.MemoryReader.readInteger(aValue + offset)
+        aValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         TotalHP = self.MemoryReader.readFloat(aValue + 0x1E0)
         self.SecondaryMonster.TotalHP = TotalHP if TotalHP > 0 else 0.0
         self.getSecondaryMonsterCurrentHP(aValue+0x1E0)
@@ -142,9 +138,7 @@ class Game:
     def getThirtiaryMonsterTotalHP(self):
         Address = Game.baseAddress + Game.MonsterOffset
         offsets = [0x650, 0x120, 0x108, 0x370]
-        aValue = self.MemoryReader.readInteger(Address)
-        for offset in offsets:
-            aValue = self.MemoryReader.readInteger(aValue + offset)
+        aValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         TotalHP = self.MemoryReader.readFloat(aValue + 0xB0)
         self.ThirtiaryMonster.TotalHP = TotalHP if TotalHP > 0 else 0.0
         self.getThirtiaryMonsterCurrentHP(aValue + 0xB0)
@@ -158,9 +152,7 @@ class Game:
     def getSessionID(self):
         Address = Game.baseAddress + Game.SessionOffset
         offsets = [0xA0, 0x20, 0x80, 0x9C]
-        sValue = self.MemoryReader.readInteger(Address)
-        for offset in offsets:
-            sValue = self.MemoryReader.readInteger(sValue + offset)
+        sValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         SessionID = self.MemoryReader.readString(sValue+0x3C8, 12)
         self.PlayerInfo.SessionID = SessionID.decode()
         Log(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})')
