@@ -11,7 +11,7 @@ class MHWPresence:
         self.Player = None
         self.PlayerInfo = None
         self.Presence = DiscordPresence()
-        self.elpsedTime = None
+        self.elapsedTime = None
 
     def ScanPIDs(self):
         for process in psutil.process_iter():
@@ -20,6 +20,7 @@ class MHWPresence:
                 print(f'MonsterHunterWorld.exe found! PID: {process.pid}')
                 return
         print('Game not found!')
+        self.Presence.clearPresence()
         self.GamePID = None
 
     def waitGameOpen(self):
@@ -50,7 +51,7 @@ class MHWPresence:
             return None
 
     def getElapsedTime(self):
-        self.elpsedTime = time.time()
+        self.elapsedTime = int(time.time())
 
     def presenceUpdate(self):
         self.Presence.changePresence(

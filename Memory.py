@@ -48,5 +48,5 @@ class Memory:
         '''
         Address = self.readInteger(base)
         for offset in offset_list:
-            Address = self.readInteger(Address)
+            Address = self.readInteger(Address + offset)
         return Address
