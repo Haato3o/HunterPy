@@ -5,11 +5,14 @@ from threading import Thread
 import psutil
 
 class IDS:
+    NoMonstersZones = [0, 7, 11, 15, 23, 24, 31]
     Zones = {
+        3 : "Great Ravine",
         7 : "Main Menu",
         8 : "Special Arena",
         10 : "Confluence of Fates",
         11 : "Gathering HUB",
+        12 : "Caverns of El Dorado",
         15 : "My Room",
         18 : "Elder's Recess",
         23 : "Training area",
@@ -63,6 +66,7 @@ class Player:
         self.Name = None
         self.Level = None
         self.ZoneID = None
+        self.LastZoneID = None
         self.ZoneName = None
         self.SessionID = None
         
@@ -103,8 +107,10 @@ class Game:
             self.getPlayerName()
             self.getSessionID()
             self.getPlayerZoneID()
+            Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}")
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
+            self.PredictTarget()
             time.sleep(0.2)
 
     def MultiThreadScan(self):
@@ -133,8 +139,11 @@ class Game:
         Address = Game.baseAddress + Game.ZoneOffset
         offsets = [0x78, 0x440, 0x8, 0x70]
         sValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
-        self.PlayerInfo.ZoneID = self.MemoryReader.readInteger(sValue + 0x2B0)
-        if self.PlayerInfo.ZoneID == 23 and self.ThirtiaryMonster.TotalHP != 0.0: # Checks if there's a monster in the map, if so then it's an arena
+        ZoneID = self.MemoryReader.readInteger(sValue + 0x2B0)
+        if self.PlayerInfo.ZoneID != ZoneID:
+            self.UpdateLastZoneID()
+            self.PlayerInfo.ZoneID = ZoneID
+        if self.PlayerInfo.ZoneID == 23 and self.ThirtiaryMonster.TotalHP != 100: # Checks if there's a monster in the map, if so then it's an arena
             self.PlayerInfo.ZoneID = 23.1
         self.getPlayerZoneNameByID()
         Log(f'{self.PlayerInfo.ZoneName} | ZONE ID: {self.PlayerInfo.ZoneID} ({hex(sValue + 0x2B0)})')
@@ -214,13 +223,18 @@ class Game:
         monsterHPComponent = self.MemoryReader.readInteger(Address+0x129D8+0x48)
         monsterTotalHpAddress = monsterHPComponent + 0x60
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHpAddress)
+        if self.PrimaryMonster.Id != None and self.PrimaryMonster.Id.startswith('ems'):
+            self.PrimaryMonster.TotalHP = 0
+        else:
+            self.PrimaryMonster.TotalHP = monsterTotalHP
         self.getPrimaryMonsterCurrentHP(monsterTotalHpAddress)
-        self.PrimaryMonster.TotalHP = monsterTotalHP
         Log(f'NAME: {self.PrimaryMonster.Name} | ID: {self.PrimaryMonster.Id} | HP: {int(self.PrimaryMonster.CurrentHP)}/{int(self.PrimaryMonster.TotalHP)} ({hex(monsterTotalHpAddress)})')
-        
+        Log(f"Target: {self.PrimaryMonster.isTarget}")
+
     def getPrimaryMonsterCurrentHP(self, totalHPAddress):
         TotalHP = self.MemoryReader.readFloat(totalHPAddress)
-        self.PrimaryMonster.CurrentHP = self.MemoryReader.readFloat(totalHPAddress + 0x4)
+        currentHP = self.MemoryReader.readFloat(totalHPAddress + 0x4)
+        self.PrimaryMonster.CurrentHP = currentHP if currentHP <= self.PrimaryMonster.TotalHP else 0
 
     ## Get 2nd info
     def GetSecondMonsterID(self):
@@ -236,13 +250,18 @@ class Game:
         monsterHPComponent = self.MemoryReader.readInteger(Address+0x129D8+0x48)
         monsterTotalHPAddress = monsterHPComponent + 0x60
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHPAddress)
+        if self.SecondaryMonster.Id != None and self.SecondaryMonster.Id.startswith('ems'):
+            self.SecondaryMonster.TotalHP = 0
+        else:
+            self.SecondaryMonster.TotalHP = monsterTotalHP
         self.getSecondaryMonsterCurrentHP(monsterTotalHPAddress)
-        self.SecondaryMonster.TotalHP = monsterTotalHP
         Log(f'NAME: {self.SecondaryMonster.Name} | ID: {self.SecondaryMonster.Id} | HP: {int(self.SecondaryMonster.CurrentHP)}/{int(self.SecondaryMonster.TotalHP)} ({hex(monsterTotalHPAddress)})')
+        Log(f"Target: {self.SecondaryMonster.isTarget}")
 
     def getSecondaryMonsterCurrentHP(self, totalHPAddress):
         TotalHP = self.MemoryReader.readFloat(totalHPAddress)
-        self.SecondaryMonster.CurrentHP = self.MemoryReader.readFloat(totalHPAddress + 0x4) if TotalHP > 0 else 0.0
+        currentHp = self.MemoryReader.readFloat(totalHPAddress + 0x4)
+        self.SecondaryMonster.CurrentHP = currentHp if currentHp <= self.SecondaryMonster.TotalHP else 0
 
     ## Get 3rd info
     def GetThirdMonsterID(self):
@@ -257,12 +276,14 @@ class Game:
         monsterTotalHPAddress = monsterHPComponent + 0x60
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHPAddress)
         self.getThirtiaryMonsterCurrentHP(monsterTotalHPAddress)
-        self.ThirtiaryMonster.TotalHP = monsterTotalHP
+        self.ThirtiaryMonster.TotalHP = int(monsterTotalHP)
         Log(f'NAME: {self.ThirtiaryMonster.Name} | ID: {self.ThirtiaryMonster.Id} | HP: {int(self.ThirtiaryMonster.CurrentHP)}/{int(self.ThirtiaryMonster.TotalHP)} ({hex(monsterTotalHPAddress)})')
+        Log(f"Target: {self.ThirtiaryMonster.isTarget}")
 
     def getThirtiaryMonsterCurrentHP(self, totalHPAddress):
         TotalHP = self.MemoryReader.readFloat(totalHPAddress)
-        self.ThirtiaryMonster.CurrentHP = self.MemoryReader.readFloat(totalHPAddress + 0x4) if TotalHP > 0 else 0.0
+        currentHP = self.MemoryReader.readFloat(totalHPAddress + 0x4)
+        self.ThirtiaryMonster.CurrentHP =  int(currentHP) if TotalHP >= int(currentHP) else 0
 
     # Session ID
     def getSessionID(self):
@@ -272,3 +293,47 @@ class Game:
         SessionID = self.MemoryReader.readString(sValue+0x3C8, 12)
         self.PlayerInfo.SessionID = SessionID.decode()
         Log(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})')
+
+    ## Zones
+    def UpdateLastZoneID(self):
+        self.PlayerInfo.LastZoneID = self.PlayerInfo.ZoneID 
+
+    # Since I have no idea how to detect which monster is being targetted
+    # I'm gonna just make this workaround.
+    def PredictTarget(self):
+        if self.PlayerInfo.ZoneID in IDS.NoMonstersZones:
+            self.PrimaryMonster.isTarget = False
+            self.SecondaryMonster.isTarget = False
+            self.ThirtiaryMonster.isTarget = False
+            return
+        tMonsterPercentage = self.ThirtiaryMonster.CurrentHP / self.ThirtiaryMonster.TotalHP if self.ThirtiaryMonster.TotalHP > 0 else 1
+        sMonsterPercentage = self.SecondaryMonster.CurrentHP / self.SecondaryMonster.TotalHP if self.SecondaryMonster.TotalHP > 0 else 1
+        fMonsterPercentage = self.PrimaryMonster.CurrentHP / self.PrimaryMonster.TotalHP if self.PrimaryMonster.TotalHP > 0 else 1
+        monsterHealthPercentage = [tMonsterPercentage, sMonsterPercentage, fMonsterPercentage]
+        for health in sorted(monsterHealthPercentage):
+            if health < 1:
+                if health == tMonsterPercentage:
+                    self.PrimaryMonster.isTarget = False
+                    self.SecondaryMonster.isTarget = False
+                    self.ThirtiaryMonster.isTarget = True
+                    return
+                elif health == sMonsterPercentage:
+                    self.PrimaryMonster.isTarget = False
+                    self.SecondaryMonster.isTarget = True
+                    self.ThirtiaryMonster.isTarget = False
+                    return
+                elif health == fMonsterPercentage:
+                    self.PrimaryMonster.isTarget = True
+                    self.SecondaryMonster.isTarget = False
+                    self.ThirtiaryMonster.isTarget = False
+                    return
+                else:
+                    self.PrimaryMonster.isTarget = False
+                    self.SecondaryMonster.isTarget = False
+                    self.ThirtiaryMonster.isTarget = False
+                    return
+            else:
+                self.PrimaryMonster.isTarget = False
+                self.SecondaryMonster.isTarget = False
+                self.ThirtiaryMonster.isTarget = False
+                continue

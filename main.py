@@ -11,7 +11,7 @@ class MHWPresence:
         self.Player = None
         self.PlayerInfo = None
         self.Presence = DiscordPresence()
-        self.elapsedTime = None
+        self.Target = None
 
     def ScanPIDs(self):
         for process in psutil.process_iter():
@@ -33,9 +33,25 @@ class MHWPresence:
         return self.PlayerInfo.ZoneName.lower().replace(' ', '-').replace("'", "")
 
     def formatAndGetDetails(self):
-        return "Hunting: {MONSTER NAME HERE}"
+        noMonsterZones = HunterPy.IDS.NoMonstersZones
+        if self.Player.PlayerInfo.ZoneID == 0:
+            return None
+        if self.Player.PlayerInfo.ZoneID in noMonsterZones:
+            return "Idle"
+        if self.Player.PrimaryMonster.isTarget:
+            return f"Hunting {self.Player.PrimaryMonster.Name}".replace("None", "Monster")
+        elif self.Player.SecondaryMonster.isTarget:
+            return f"Hunting {self.Player.SecondaryMonster.Name}".replace("None", "Monster")
+        elif self.Player.ThirtiaryMonster.isTarget:
+            return f"Hunting {self.Player.ThirtiaryMonster.Name}".replace("None", "Monster")
+        else:
+            return f"Exploring"
+        
 
     def getTargetHP(self):
+        noMonsterZones = HunterPy.IDS.NoMonstersZones
+        if self.Player.PlayerInfo.ZoneID in noMonsterZones:
+            return None
         if self.Player.PrimaryMonster.isTarget:
             curHP = self.Player.PrimaryMonster.CurrentHP
             totalHp = self.Player.PrimaryMonster.TotalHP
@@ -45,16 +61,17 @@ class MHWPresence:
         elif self.Player.ThirtiaryMonster.isTarget:
             curHP = self.Player.ThirtiaryMonster.CurrentHP
             totalHp = self.Player.ThirtiaryMonster.TotalHP
+        else:
+            return None
         try:
-            return f'{int(curHP)}/{int(totalHp)}'
+            return f'HP: {int(curHP/totalHp*100)}%'
         except:
             return None
 
-    def getElapsedTime(self):
-        self.elapsedTime = int(time.time())
 
     def presenceUpdate(self):
         self.Presence.changePresence(
+            pid = self.GamePID,
             details = self.formatAndGetDetails(),
             state = self.getTargetHP(),
             large_text = self.PlayerInfo.ZoneName,
