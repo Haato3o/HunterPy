@@ -97,7 +97,7 @@ class MHWPresence:
         )
 
     def GetMessageFromHunterPy(self):
-        while True:
+        while self.Scanning:
             self.ConsoleMessage = []
             self.ConsoleMessage.append("".join(self.Player.Logger))
             time.sleep(0.5)
@@ -125,6 +125,6 @@ class MHWPresence:
                     self.Scanning = True
                     self.ScannerConsole()
                 self.presenceUpdate()
-                time.sleep(15)
+                time.sleep(10)
         except KeyboardInterrupt:
             print("Exiting...")

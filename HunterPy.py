@@ -37,7 +37,7 @@ class IDS:
         "em007_00" : "Diablos",
         "em116_00" : "Dodogama",
         "em112_00" : "Great Girros",
-        "em101_00" : "Jyuratodus",
+        "em108_00" : "Jyuratodus",
         "em011_00" : "Kirin",
         "em107_00" : "Kulu Ya Ku",
         "em117_00" : "Kulve Taroth",
@@ -312,9 +312,18 @@ class Game:
             self.SecondaryMonster.isTarget = False
             self.ThirtiaryMonster.isTarget = False
             return
-        tMonsterPercentage = self.ThirtiaryMonster.CurrentHP / self.ThirtiaryMonster.TotalHP if self.ThirtiaryMonster.TotalHP > 0 else 1
-        sMonsterPercentage = self.SecondaryMonster.CurrentHP / self.SecondaryMonster.TotalHP if self.SecondaryMonster.TotalHP > 0 else 1
-        fMonsterPercentage = self.PrimaryMonster.CurrentHP / self.PrimaryMonster.TotalHP if self.PrimaryMonster.TotalHP > 0 else 1
+        if self.ThirtiaryMonster.TotalHP > 0:
+            tMonsterPercentage = self.ThirtiaryMonster.CurrentHP / self.ThirtiaryMonster.TotalHP if (self.ThirtiaryMonster.CurrentHP / self.ThirtiaryMonster.TotalHP) > 0 else 1
+        else:
+            tMonsterPercentage = 1
+        if self.SecondaryMonster.TotalHP > 0:
+            sMonsterPercentage = self.SecondaryMonster.CurrentHP / self.SecondaryMonster.TotalHP if (self.SecondaryMonster.CurrentHP / self.SecondaryMonster.TotalHP) > 0 else 1
+        else:
+            sMonsterPercentage = 1
+        if self.PrimaryMonster.TotalHP > 0:
+            fMonsterPercentage = self.PrimaryMonster.CurrentHP / self.PrimaryMonster.TotalHP if (self.PrimaryMonster.CurrentHP / self.PrimaryMonster.TotalHP) > 0 else 1
+        else:
+            fMonsterPercentage = 1
         monsterHealthPercentage = [tMonsterPercentage, sMonsterPercentage, fMonsterPercentage]
         for health in sorted(monsterHealthPercentage):
             if health < 1:
