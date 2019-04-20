@@ -65,22 +65,22 @@ class IDS:
 
 class Player:
     def __init__(self):
-        self.Name = None
-        self.Level = None
-        self.ZoneID = None
-        self.LastZoneID = None
-        self.ZoneName = None
-        self.SessionID = None
+        self.Name = ""
+        self.Level = 0
+        self.ZoneID = 0
+        self.LastZoneID = 0
+        self.ZoneName = ""
+        self.SessionID = ""
         
 
 class Monster:
     def __init__(self):
         self.Name = "UNKNOWN"
-        self.Id = None
-        self.TotalHP = None
-        self.CurrentHP = None
+        self.Id = ""
+        self.TotalHP = 0
+        self.CurrentHP = 0
         self.isTarget = False
-        self.Address = 0xFFFFFF
+        self.Address = 0x0
 
 class Game:
     baseAddress = 0x140000000 # MonsterHunterWorld.exe base address
@@ -94,7 +94,7 @@ class Game:
         # Scanner stuff
         self.pid = pid
         self.MemoryReader = Memory(self.pid)
-        self.Scanner = None
+        self.Scanner = False
         # Player info
         self.PlayerInfo = Player()
         # Monsters info

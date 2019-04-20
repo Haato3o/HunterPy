@@ -358,8 +358,7 @@ class Ui_Console(object):
     def UpdateConsoleText(self, string):
         self.TextBox.setText(string)
 
-
-if __name__ == "__main__":
+def Main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Console = QtWidgets.QMainWindow()
@@ -367,6 +366,9 @@ if __name__ == "__main__":
     ui.setupUi(Console)
     Console.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    Main()
     
     
     
