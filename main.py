@@ -2,6 +2,7 @@ import psutil
 import HunterPy
 from presence import DiscordPresence
 import time, sys
+from threading import Thread
 
 class MHWPresence:
     def __init__(self):
@@ -14,18 +15,19 @@ class MHWPresence:
         self.Target = None
 
     def ScanPIDs(self):
+
         for process in psutil.process_iter():
             if process.name() == 'MonsterHunterWorld.exe':
                 self.GamePID = process.pid
                 print(f'MonsterHunterWorld.exe found! PID: {process.pid}')
                 return
-        print('Game not found!')
-        self.Presence.clearPresence()
+        print('"MonsterHunterWorld.exe" not found!')
         self.GamePID = None
 
     def waitGameOpen(self):
         while self.GamePID == None:
             self.ScanPIDs()
+            time.sleep(1.5)
     
     def getLocationImage(self):
         if self.PlayerInfo.ZoneName == None:
@@ -36,7 +38,7 @@ class MHWPresence:
         noMonsterZones = HunterPy.IDS.NoMonstersZones
         if self.Player.PlayerInfo.ZoneID == 0:
             return None
-        if self.Player.PlayerInfo.ZoneID in noMonsterZones:
+        if self.PlayerInfo.ZoneName == "Main Menu" or self.PlayerInfo.ZoneID in noMonsterZones:
             return "Idle"
         if self.Player.PrimaryMonster.isTarget:
             return f"Hunting {self.Player.PrimaryMonster.Name}".replace("None", "Monster")
@@ -70,6 +72,8 @@ class MHWPresence:
 
 
     def presenceUpdate(self):
+        if self.PlayerInfo.Name == "":
+            return
         self.Presence.changePresence(
             pid = self.GamePID,
             details = self.formatAndGetDetails(),
@@ -84,22 +88,19 @@ class MHWPresence:
         try:
             while True:
                 if self.GamePID == None or psutil.pid_exists(self.GamePID) == False:
-                    self.GamePID = None
+                    self.ScanPIDs()
                     self.Presence.clearPresence()
                     self.Scanning = False
-                    self.ScanPIDs()
-                if self.GamePID != None and self.Scanning == False:
+                    time.sleep(1.5)
+                    continue
+                elif self.GamePID != None and self.Scanning == False:
                     self.Player = HunterPy.Game(self.GamePID)
                     self.PlayerInfo = self.Player.PlayerInfo
                     self.Player.init()
                     self.Presence.connect()
                     self.Scanning = True
-                elif self.GamePID == None:
-                    self.Presence.clearPresence()
-                    self.Scanning = False
-                    continue
                 self.presenceUpdate()
-                time.sleep(10)
+                time.sleep(15)
         except KeyboardInterrupt:
             print("Exiting...")
 

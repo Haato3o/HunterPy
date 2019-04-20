@@ -5,10 +5,13 @@ from threading import Thread
 import psutil
 
 class IDS:
-    NoMonstersZones = [0, 7, 11, 15, 23, 24, 31]
+    NoMonstersZones = [0, 3.1, 5, 7, 11, 15, 23, 24, 31]
     Zones = {
         3 : "Great Ravine",
+        3.1 : "Main Menu",
+        5 : "Main Menu",
         7 : "Main Menu",
+        17 : "Main Menu",
         8 : "Special Arena",
         10 : "Confluence of Fates",
         11 : "Gathering HUB",
@@ -145,6 +148,8 @@ class Game:
             self.PlayerInfo.ZoneID = ZoneID
         if self.PlayerInfo.ZoneID == 23 and self.ThirtiaryMonster.TotalHP != 100: # Checks if there's a monster in the map, if so then it's an arena
             self.PlayerInfo.ZoneID = 23.1
+        if self.PlayerInfo.ZoneID == 3 and self.SecondaryMonster.TotalHP == 0:
+            self.PlayerInfo.ZoneID = 3.1
         self.getPlayerZoneNameByID()
         Log(f'{self.PlayerInfo.ZoneName} | ZONE ID: {self.PlayerInfo.ZoneID} ({hex(sValue + 0x2B0)})')
         
@@ -332,7 +337,7 @@ class Game:
                     self.SecondaryMonster.isTarget = False
                     self.ThirtiaryMonster.isTarget = False
                     return
-            else:
+            elif health == 1:
                 self.PrimaryMonster.isTarget = False
                 self.SecondaryMonster.isTarget = False
                 self.ThirtiaryMonster.isTarget = False

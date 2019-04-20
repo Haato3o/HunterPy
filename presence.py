@@ -18,8 +18,7 @@ class DiscordPresence:
             self.Connected = False
 
     def clearPresence(self):
-        if self.Connected:
-            self.Discord.clear()
+        self.Discord.clear()
 
     def changePresence(self, **kwargs):
         self.Discord.update(**kwargs)
