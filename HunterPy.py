@@ -1,5 +1,4 @@
 from Memory import *
-from logger import Log
 import time, os
 from threading import Thread
 import psutil
@@ -102,18 +101,20 @@ class Game:
         self.PrimaryMonster = Monster()
         self.SecondaryMonster = Monster()
         self.ThirtiaryMonster = Monster()
+        self.Logger = []
         
     def scanUntilDone(self):
         while psutil.pid_exists(self.pid):
-            os.system('cls')
+            self.Logger = []
             self.getPlayerLevel()
             self.getPlayerName()
             self.getSessionID()
-            self.getPlayerZoneID()
-            Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}")
+            #self.Logger.append(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
+            self.getPlayerZoneID()
             self.PredictTarget()
+            
             time.sleep(0.2)
 
     def MultiThreadScan(self):
@@ -122,12 +123,12 @@ class Game:
         self.Scanner.start()
 
     def init(self):
-        Log(f"BASE ADDRESS: {hex(Game.baseAddress)}")
+        self.Logger.append(f"BASE ADDRESS: {hex(Game.baseAddress)}")
         self.MultiThreadScan()
             
     def getPlayerName(self):
         self.PlayerInfo.Name = self.MemoryReader.readString(Game.levelAddress-64, 20).decode().strip('\x00')
-        Log(f"PLAYER NAME: {self.PlayerInfo.Name} ({hex(Game.levelAddress-64)})")
+        self.Logger.append(f"PLAYER NAME: {self.PlayerInfo.Name} ({hex(Game.levelAddress-64)})\n")
 
     def getPlayerLevel(self):
         Address = Game.baseAddress + Game.LevelOffset
@@ -136,22 +137,22 @@ class Game:
         ptrValue = self.MemoryReader.readInteger(ptrAddress)
         Game.levelAddress = ptrValue + 0x68
         self.PlayerInfo.Level = self.MemoryReader.readInteger(ptrValue + 0x68)
-        Log(f'HUNTER RANK: {self.PlayerInfo.Level} ({hex(ptrValue+0x68)})')
+        self.Logger.append(f'HUNTER RANK: {self.PlayerInfo.Level} ({hex(ptrValue+0x68)})\n')
 
     def getPlayerZoneID(self):
         Address = Game.baseAddress + Game.ZoneOffset
         offsets = [0x78, 0x440, 0x8, 0x70]
         sValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         ZoneID = self.MemoryReader.readInteger(sValue + 0x2B0)
+        if ZoneID == 23 and self.ThirtiaryMonster.TotalHP != 100: # Checks if there's a monster in the map, if so then it's an arena
+            ZoneID = 23.1
+        if ZoneID == 3 and self.SecondaryMonster.TotalHP == 0:
+            ZoneID = 3.1
         if self.PlayerInfo.ZoneID != ZoneID:
             self.UpdateLastZoneID()
             self.PlayerInfo.ZoneID = ZoneID
-        if self.PlayerInfo.ZoneID == 23 and self.ThirtiaryMonster.TotalHP != 100: # Checks if there's a monster in the map, if so then it's an arena
-            self.PlayerInfo.ZoneID = 23.1
-        if self.PlayerInfo.ZoneID == 3 and self.SecondaryMonster.TotalHP == 0:
-            self.PlayerInfo.ZoneID = 3.1
         self.getPlayerZoneNameByID()
-        Log(f'{self.PlayerInfo.ZoneName} | ZONE ID: {self.PlayerInfo.ZoneID} ({hex(sValue + 0x2B0)})')
+        self.Logger.insert(2, f'{self.PlayerInfo.ZoneName} | ZONE ID: {self.PlayerInfo.ZoneID} ({hex(sValue + 0x2B0)})\n')
         
     def getPlayerZoneNameByID(self):
         self.PlayerInfo.ZoneName = IDS.Zones.get(self.PlayerInfo.ZoneID)
@@ -233,8 +234,8 @@ class Game:
         else:
             self.PrimaryMonster.TotalHP = monsterTotalHP
         self.getPrimaryMonsterCurrentHP(monsterTotalHpAddress)
-        Log(f'NAME: {self.PrimaryMonster.Name} | ID: {self.PrimaryMonster.Id} | HP: {int(self.PrimaryMonster.CurrentHP)}/{int(self.PrimaryMonster.TotalHP)} ({hex(monsterTotalHpAddress)})')
-        Log(f"Target: {self.PrimaryMonster.isTarget}")
+        self.Logger.append(f'NAME: {self.PrimaryMonster.Name} | ID: {self.PrimaryMonster.Id} | HP: {int(self.PrimaryMonster.CurrentHP)}/{int(self.PrimaryMonster.TotalHP)} ({hex(monsterTotalHpAddress)})\n')
+        self.Logger.append(f"Target: {self.PrimaryMonster.isTarget}\n")
 
     def getPrimaryMonsterCurrentHP(self, totalHPAddress):
         TotalHP = self.MemoryReader.readFloat(totalHPAddress)
@@ -260,8 +261,8 @@ class Game:
         else:
             self.SecondaryMonster.TotalHP = monsterTotalHP
         self.getSecondaryMonsterCurrentHP(monsterTotalHPAddress)
-        Log(f'NAME: {self.SecondaryMonster.Name} | ID: {self.SecondaryMonster.Id} | HP: {int(self.SecondaryMonster.CurrentHP)}/{int(self.SecondaryMonster.TotalHP)} ({hex(monsterTotalHPAddress)})')
-        Log(f"Target: {self.SecondaryMonster.isTarget}")
+        self.Logger.append(f'NAME: {self.SecondaryMonster.Name} | ID: {self.SecondaryMonster.Id} | HP: {int(self.SecondaryMonster.CurrentHP)}/{int(self.SecondaryMonster.TotalHP)} ({hex(monsterTotalHPAddress)})\n')
+        self.Logger.append(f"Target: {self.SecondaryMonster.isTarget}\n")
 
     def getSecondaryMonsterCurrentHP(self, totalHPAddress):
         TotalHP = self.MemoryReader.readFloat(totalHPAddress)
@@ -282,8 +283,8 @@ class Game:
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHPAddress)
         self.getThirtiaryMonsterCurrentHP(monsterTotalHPAddress)
         self.ThirtiaryMonster.TotalHP = int(monsterTotalHP)
-        Log(f'NAME: {self.ThirtiaryMonster.Name} | ID: {self.ThirtiaryMonster.Id} | HP: {int(self.ThirtiaryMonster.CurrentHP)}/{int(self.ThirtiaryMonster.TotalHP)} ({hex(monsterTotalHPAddress)})')
-        Log(f"Target: {self.ThirtiaryMonster.isTarget}")
+        self.Logger.append(f'NAME: {self.ThirtiaryMonster.Name} | ID: {self.ThirtiaryMonster.Id} | HP: {int(self.ThirtiaryMonster.CurrentHP)}/{int(self.ThirtiaryMonster.TotalHP)} ({hex(monsterTotalHPAddress)})\n')
+        self.Logger.append(f"Target: {self.ThirtiaryMonster.isTarget}\n")
 
     def getThirtiaryMonsterCurrentHP(self, totalHPAddress):
         TotalHP = self.MemoryReader.readFloat(totalHPAddress)
@@ -297,7 +298,7 @@ class Game:
         sValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         SessionID = self.MemoryReader.readString(sValue+0x3C8, 12)
         self.PlayerInfo.SessionID = SessionID.decode()
-        Log(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})')
+        self.Logger.append(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})\n')
 
     ## Zones
     def UpdateLastZoneID(self):
