@@ -17,6 +17,7 @@ class Ui_Console(object):
         self.LastMessage = None
         self.ConsolePrint = []
         self.GetTheConsoleText()
+        self.Version = "2.0.1"
 
     def setupUi(self, Console):
         Console.setObjectName("Console")
@@ -180,7 +181,7 @@ class Ui_Console(object):
         self.centralwidget.setObjectName("centralwidget")
         self.ConsoleBox = QtWidgets.QScrollArea(self.centralwidget)
         self.ConsoleBox.setEnabled(True)
-        self.ConsoleBox.setGeometry(QtCore.QRect(10, 60, 681, 331))
+        self.ConsoleBox.setGeometry(QtCore.QRect(10, 50, 681, 341))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(226, 226, 226))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -328,14 +329,46 @@ class Ui_Console(object):
         self.ConsoleBox.setMidLineWidth(-1)
         self.ConsoleBox.setWidgetResizable(True)
         self.ConsoleBox.setObjectName("ConsoleBox")
+        self.ConsoleBox.setStyleSheet('''QScrollBar:vertical {
+                                        border-width: 1px;
+                                        background-color: rgb(65, 65, 65);
+                                        width: 10px;
+                                        padding-right: 2px;
+                                        border-radius: 3px;
+                                        padding-top: 2px;
+                                        padding-bottom: 2px;
+                                    }
+                                    QScrollBar::handle:vertical {
+                                        background-color: rgb(45, 45, 45);
+                                        min-width: 5px;
+                                        border-radius: 3px;
+                                    }
+                                    QScrollBar::add-page:vertical {
+                                        background-color: none;
+                                    }
+                                    QScrollBar::sub-page:vertical {
+                                        background-color: none;
+                                    }
+                                    QScrollBar::add-line:vertical {
+                                        border: none;
+                                        background-color: none;
+                                    }
+                                    QScrollBar::sub-line:vertical {
+                                        border: none;
+                                        background-color: none;
+                                    }''')
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 683, 333))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 681, 341))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.scrollAreaWidgetContents.setFont(font)
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setStyleSheet('''QTextBrowser {
+                                                        background-color: rgb(61, 61, 61);
+                                                        color: white;
+                                                    }''')
         self.TextBox = QtWidgets.QTextBrowser(self.scrollAreaWidgetContents)
-        self.TextBox.setGeometry(QtCore.QRect(0, 0, 681, 381))
+        self.TextBox.setGeometry(QtCore.QRect(0, 0, 681, 341))
         font = QtGui.QFont()
         font.setFamily("MS Reference Sans Serif")
         font.setPointSize(12)
@@ -365,6 +398,7 @@ class Ui_Console(object):
 
         self.OpenOverlayWindow()
         QtCore.QTimer.singleShot(1, self.UpdateOverlay)
+        Console.closeEvent = self.closeEverything
 
     def UpdateOverlay(self):
         if self.OverlayUI.OverlayEnabled and self.MHWPresence.Scanning:
@@ -410,6 +444,7 @@ class Ui_Console(object):
 
     def GetTextFromPresence(self):
         message = '\n'.join(self.MHWPresence.ConsoleMessage)
+        message = message+"".join(self.ConsolePrint)
         if message != self.LastMessage:
             self.UpdateConsoleText(message)
             self.LastMessage = message
@@ -421,13 +456,20 @@ class Ui_Console(object):
     def UpdateConsoleText(self, string):
         self.TextBox.setText(string)
 
+    def Log(self, text):
+        if len(self.ConsolePrint) > 100:
+            self.ConsolePrint = []
+        self.ConsolePrint.append("\n"+text)
+
     def enableOverlayHandler(self):
         if self.enableOverlay.isChecked():
             self.OverlayWindow.show()
             self.OverlayUI.OverlayEnabled = True
+            self.Log("Overlay is now enabled!")
         else:
             self.OverlayWindow.hide()
             self.OverlayUI.OverlayEnabled = False
+            self.Log("Overlay is now disabled!")
 
     def OpenOverlayWindow(self):
         self.OverlayWindow = QtWidgets.QMainWindow()
@@ -439,6 +481,10 @@ class Ui_Console(object):
         else:
             self.enableOverlay.setChecked(False)
             self.OverlayWindow.hide()
+
+    def closeEverything(self, event):
+        self.OverlayWindow.close()
+        event.accept()
 
 def Main():
     import sys

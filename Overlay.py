@@ -13,9 +13,9 @@ class Ui_OverlayWindow(object):
         def setupUi(self, OverlayWindow):
                 self.OverlayWindow = OverlayWindow
                 OverlayWindow.setObjectName("OverlayWindow")
-                OverlayWindow.resize(742, 211)
-                OverlayWindow.setMinimumSize(QtCore.QSize(742, 211))
-                OverlayWindow.setMaximumSize(QtCore.QSize(742, 211))
+                OverlayWindow.resize(742, 93)
+                OverlayWindow.setMinimumSize(QtCore.QSize(742, 93))
+                OverlayWindow.setMaximumSize(QtCore.QSize(742, 93))
                 OverlayWindow.setWindowOpacity(1.0)
                 # Make background transparent
                 OverlayWindow.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
@@ -23,8 +23,7 @@ class Ui_OverlayWindow(object):
                 ##
                 OverlayWindow.setAutoFillBackground(False)
                 OverlayWindow.setStyleSheet("QLabel {\n"
-        "    color: white;\n"
-        "}")
+        "    color: white;}\nQProgressBar {\n background-color: rgba(75, 75, 75, 0.5);\nborder-radius: 2px;\n}\nQProgressBar::chunk {\nborder-radius: 2px;\n}")
                 self.firstMonsterName = QtWidgets.QLabel(OverlayWindow)
                 self.firstMonsterName.setGeometry(QtCore.QRect(0, 0, 211, 31))
                 font = QtGui.QFont()
@@ -35,7 +34,7 @@ class Ui_OverlayWindow(object):
                 self.firstMonsterName.setObjectName("firstMonsterName")
                 self.firstMonsterHPBar = QtWidgets.QProgressBar(OverlayWindow)
                 self.firstMonsterHPBar.setEnabled(True)
-                self.firstMonsterHPBar.setGeometry(QtCore.QRect(10, 60, 201, 10))
+                self.firstMonsterHPBar.setGeometry(QtCore.QRect(10, 60, 201, 6))
                 palette = QtGui.QPalette()
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
@@ -209,7 +208,7 @@ class Ui_OverlayWindow(object):
                 self.secondMonsterHPText.setObjectName("secondMonsterHPText")
                 self.secondMonsterHPBar = QtWidgets.QProgressBar(OverlayWindow)
                 self.secondMonsterHPBar.setEnabled(True)
-                self.secondMonsterHPBar.setGeometry(QtCore.QRect(270, 60, 201, 10))
+                self.secondMonsterHPBar.setGeometry(QtCore.QRect(270, 60, 201, 6))
                 palette = QtGui.QPalette()
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
@@ -359,7 +358,7 @@ class Ui_OverlayWindow(object):
                 self.secondMonsterHPBar.setObjectName("secondMonsterHPBar")
                 self.thirdMonsterHPBar = QtWidgets.QProgressBar(OverlayWindow)
                 self.thirdMonsterHPBar.setEnabled(True)
-                self.thirdMonsterHPBar.setGeometry(QtCore.QRect(530, 60, 201, 10))
+                self.thirdMonsterHPBar.setGeometry(QtCore.QRect(530, 60, 201, 6))
                 palette = QtGui.QPalette()
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
@@ -530,10 +529,17 @@ class Ui_OverlayWindow(object):
                 self.LoadJson(True)
                 # Keep loading it
                 QtCore.QTimer.singleShot(1, self.LoadJson)
-                #Config
-                #self.OverlayConfig = None
-                #self.OverlayPosition = None
-                #self.OverlayEnabled = True
+                #### HIDE ELEMENTS #####
+                
+                self.firstMonsterHPBar.hide()
+                self.firstMonsterHPText.hide()
+                self.firstMonsterName.hide()
+                self.secondMonsterHPBar.hide()
+                self.secondMonsterHPText.hide()
+                self.secondMonsterName.hide()
+                self.thirdMonsterHPBar.hide()
+                self.thirdMonsterHPText.hide()
+                self.thirdMonsterName.hide()
                 
         def UpdateFirstMonster(self, action, data={"name":"","hp":[0,0]}):
                 if action == 'HIDE':

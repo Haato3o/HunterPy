@@ -1,7 +1,7 @@
 import psutil
 import HunterPy
 from presence import DiscordPresence
-import time, sys
+import time
 from threading import Thread
 
 class MHWPresence:
