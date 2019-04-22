@@ -1,3 +1,0 @@
-from Console import *
-
-Main()

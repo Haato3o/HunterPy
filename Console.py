@@ -9,11 +9,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from threading import Thread
 import HunterPresence
+from Overlay import Ui_OverlayWindow
 
 class Ui_Console(object):
     def __init__(self):
         self.MHWPresence = HunterPresence.MHWPresence()
         self.LastMessage = None
+        self.ConsolePrint = []
         self.GetTheConsoleText()
 
     def setupUi(self, Console):
@@ -164,18 +166,21 @@ class Ui_Console(object):
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ToolTipText, brush)
         Console.setPalette(palette)
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(12)
         Console.setFont(font)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("/media/icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Console.setWindowIcon(icon)
         Console.setWindowOpacity(1.0)
         Console.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.centralwidget = QtWidgets.QWidget(Console)
+        font = QtGui.QFont()
+        font.setFamily("MS Serif")
+        self.centralwidget.setFont(font)
         self.centralwidget.setObjectName("centralwidget")
         self.ConsoleBox = QtWidgets.QScrollArea(self.centralwidget)
         self.ConsoleBox.setEnabled(True)
-        self.ConsoleBox.setGeometry(QtCore.QRect(10, 10, 681, 381))
+        self.ConsoleBox.setGeometry(QtCore.QRect(10, 60, 681, 331))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(226, 226, 226))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -324,26 +329,84 @@ class Ui_Console(object):
         self.ConsoleBox.setWidgetResizable(True)
         self.ConsoleBox.setObjectName("ConsoleBox")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 500, 383))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 683, 333))
         font = QtGui.QFont()
-        font.setPointSize(9)
+        font.setPointSize(14)
         self.scrollAreaWidgetContents.setFont(font)
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.TextBox = QtWidgets.QTextBrowser(self.scrollAreaWidgetContents)
-        self.TextBox.setGeometry(QtCore.QRect(0, 0, 691, 381))
+        self.TextBox.setGeometry(QtCore.QRect(0, 0, 681, 381))
+        font = QtGui.QFont()
+        font.setFamily("MS Reference Sans Serif")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setWeight(50)
+        self.TextBox.setFont(font)
+        self.TextBox.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.TextBox.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.TextBox.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.TextBox.setReadOnly(True)
+        self.TextBox.setPlaceholderText("")
         self.TextBox.setObjectName("TextBox")
         self.ConsoleBox.setWidget(self.scrollAreaWidgetContents)
+        self.enableOverlay = QtWidgets.QCheckBox(self.centralwidget)
+        self.enableOverlay.setGeometry(QtCore.QRect(470, 20, 221, 21))
+        font = QtGui.QFont()
+        font.setFamily("MS Reference Sans Serif")
+        self.enableOverlay.setFont(font)
+        self.enableOverlay.setObjectName("enableOverlay")
         Console.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Console)
         QtCore.QMetaObject.connectSlotsByName(Console)
+        
+        self.enableOverlay.setCheckable(True)
+        self.enableOverlay.stateChanged.connect(self.enableOverlayHandler)
+
+        self.OpenOverlayWindow()
+        QtCore.QTimer.singleShot(1, self.UpdateOverlay)
+
+    def UpdateOverlay(self):
+        if self.OverlayUI.OverlayEnabled and self.MHWPresence.Scanning:
+            self.firstMonsterInfo()
+            self.secondMonsterInfo()
+            self.thirdMonsterInfo()
+        QtCore.QTimer.singleShot(1, self.UpdateOverlay)
+
+    def firstMonsterInfo(self):
+        if self.MHWPresence.Player.PrimaryMonster.Id in self.MHWPresence.MonstersIds and self.MHWPresence.Player.PrimaryMonster.CurrentHP > 0:
+            MonsterData = {
+                "name" : self.MHWPresence.Player.PrimaryMonster.Name,
+                "hp" : [self.MHWPresence.Player.PrimaryMonster.CurrentHP, self.MHWPresence.Player.PrimaryMonster.TotalHP]
+            }
+            self.OverlayUI.UpdateFirstMonster('UPDATE', MonsterData)
+        else:
+            self.OverlayUI.UpdateFirstMonster('HIDE')
+    
+    def secondMonsterInfo(self):
+        if self.MHWPresence.Player.SecondaryMonster.Id in self.MHWPresence.MonstersIds and self.MHWPresence.Player.SecondaryMonster.CurrentHP > 0:
+            MonsterData = {
+                "name" : self.MHWPresence.Player.SecondaryMonster.Name,
+                "hp" : [self.MHWPresence.Player.SecondaryMonster.CurrentHP, self.MHWPresence.Player.SecondaryMonster.TotalHP]
+            }
+            self.OverlayUI.UpdateSecondMonster('UPDATE', MonsterData)
+        else:
+            self.OverlayUI.UpdateSecondMonster('HIDE')
+
+    def thirdMonsterInfo(self):
+        if self.MHWPresence.Player.ThirtiaryMonster.Id in self.MHWPresence.MonstersIds and self.MHWPresence.Player.ThirtiaryMonster.CurrentHP > 0:
+            MonsterData = {
+                "name" : self.MHWPresence.Player.ThirtiaryMonster.Name,
+                "hp" : [self.MHWPresence.Player.ThirtiaryMonster.CurrentHP, self.MHWPresence.Player.ThirtiaryMonster.TotalHP]
+            }
+            self.OverlayUI.UpdateThirdMonster('UPDATE', MonsterData)
+        else:
+            self.OverlayUI.UpdateThirdMonster('HIDE')
 
     def retranslateUi(self, Console):
         _translate = QtCore.QCoreApplication.translate
         Console.setWindowTitle(_translate("Console", "HunterPy"))
-        #self.TextBox.setText("string")
+        self.enableOverlay.setText(_translate("Console", "Enable in-game overlay"))
 
     def GetTextFromPresence(self):
         message = '\n'.join(self.MHWPresence.ConsoleMessage)
@@ -358,6 +421,25 @@ class Ui_Console(object):
     def UpdateConsoleText(self, string):
         self.TextBox.setText(string)
 
+    def enableOverlayHandler(self):
+        if self.enableOverlay.isChecked():
+            self.OverlayWindow.show()
+            self.OverlayUI.OverlayEnabled = True
+        else:
+            self.OverlayWindow.hide()
+            self.OverlayUI.OverlayEnabled = False
+
+    def OpenOverlayWindow(self):
+        self.OverlayWindow = QtWidgets.QMainWindow()
+        self.OverlayUI = Ui_OverlayWindow()
+        self.OverlayUI.setupUi(self.OverlayWindow)
+        if self.OverlayUI.OverlayEnabled:
+            self.enableOverlay.setChecked(True)
+            self.OverlayWindow.show()
+        else:
+            self.enableOverlay.setChecked(False)
+            self.OverlayWindow.hide()
+
 def Main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -369,7 +451,3 @@ def Main():
 
 if __name__ == "__main__":
     Main()
-    
-    
-    
-

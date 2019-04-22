@@ -14,6 +14,7 @@ class MHWPresence:
         self.PlayerInfo = None
         self.Presence = DiscordPresence()
         self.Target = None
+        self.MonstersIds = HunterPy.IDS.Monsters
         self.ConsoleMessage = []
 
     def Log(self, string):

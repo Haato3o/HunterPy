@@ -474,9 +474,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>60</y>
       <width>681</width>
-      <height>381</height>
+      <height>331</height>
      </rect>
     </property>
     <property name="palette">
@@ -896,7 +896,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Myanmar Text</family>
+      <family>MS Reference Sans Serif</family>
      </font>
     </property>
     <property name="autoFillBackground">
@@ -923,7 +923,7 @@
        <x>0</x>
        <y>0</y>
        <width>683</width>
-       <height>383</height>
+       <height>333</height>
       </rect>
      </property>
      <property name="font">
@@ -942,8 +942,14 @@
       </property>
       <property name="font">
        <font>
-        <family>MS Serif</family>
+        <family>MS Reference Sans Serif</family>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
+      </property>
+      <property name="cursor" stdset="0">
+       <cursorShape>ArrowCursor</cursorShape>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -951,18 +957,39 @@
       <property name="frameShadow">
        <enum>QFrame::Sunken</enum>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
       <property name="html">
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Serif'; font-size:14pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Reference Sans Serif'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="placeholderText">
-       <string>sadsad</string>
+       <string/>
       </property>
      </widget>
     </widget>
+   </widget>
+   <widget class="QCheckBox" name="enableOverlay">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>20</y>
+      <width>221</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>MS Reference Sans Serif</family>
+     </font>
+    </property>
+    <property name="text">
+     <string>Enable in-game overlay</string>
+    </property>
    </widget>
   </widget>
  </widget>

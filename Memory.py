@@ -8,6 +8,7 @@ class Memory:
     CHAR = 1
     FLOAT = 4
     LONG = 4
+    LONGLONG = 8
 
     def __init__(self, pid):
         self.pid = pid
@@ -40,6 +41,13 @@ class Memory:
         result = struct.unpack('f', buffer[0: Memory.FLOAT])[0]
         return result
     
+    def readLongLong(self, address):
+        buffer = create_string_buffer(Memory.LONGLONG)
+        lRead = c_size_t()
+        self.ReadMemory(self.pHandle, c_void_p(address), buffer, Memory.LONGLONG, byref(lRead))
+        result = struct.unpack('Q', buffer[0: Memory.LONGLONG])[0]
+        return result
+
     def GetMultilevelPtr(self, base, offset_list):
         '''
             [int]       base:           Base address
@@ -48,5 +56,5 @@ class Memory:
         '''
         Address = self.readInteger(base)
         for offset in offset_list:
-            Address = self.readInteger(Address + offset)
+            Address = self.readLongLong(Address + offset)
         return Address
