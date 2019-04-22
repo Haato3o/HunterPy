@@ -1,6 +1,6 @@
 {
     "Overlay": {
-        "OverlayEnabled": false,
+        "OverlayEnabled": true,
         "OverlayPosition": [
             350,
             10
