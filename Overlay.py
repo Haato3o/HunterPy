@@ -622,7 +622,7 @@ class Ui_OverlayWindow(object):
                 except FileNotFoundError:
                         self.makeConfig()
                 except json.decoder.JSONDecodeError:
-                        pass     
+                        pass
                 QtCore.QTimer.singleShot(1, self.MoveOverlay)
 
         def SaveConfig(self):
@@ -637,4 +637,7 @@ class Ui_OverlayWindow(object):
                 f = open("config.json", "w")
                 configTemplate = dict(Overlay=dict(OverlayEnabled=False, OverlayPosition=[0, 0]))
                 json.dump(configTemplate, f, indent=4)
-                return
+                self.OverlayConfig = configTemplate["Overlay"]
+                self.OverlayPosition = self.OverlayConfig["OverlayPosition"]
+                self.OverlayEnabled = self.OverlayConfig["OverlayEnabled"]
+                self.LoadJson(True)

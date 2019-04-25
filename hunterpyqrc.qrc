@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Assets">
+    <file>hunterpylogo.png</file>
+  </qresource>
+</RCC>

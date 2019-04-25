@@ -12,8 +12,9 @@ import HunterPresence
 from Overlay import Ui_OverlayWindow
 import os
 import subprocess
+import sys
 
-Version = "2.0.5"
+Version = "2.0.6"
 
 class Ui_Console(object):
     def __init__(self):
@@ -494,7 +495,6 @@ def MainUp():
     sys.exit()
 
 def Main():
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     Console = QtWidgets.QMainWindow()
     ui = Ui_Console()
