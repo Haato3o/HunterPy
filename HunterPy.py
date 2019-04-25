@@ -28,6 +28,7 @@ class IDS:
     }
     Monsters = {
         "em100_00" : "Anjanath",
+        "em101_00" : "Great Jagras",
         "em002_01" : "Azure Rathalos",
         "em044_00" : "Barroth",
         "em118_00" : "Bazelgeuse",

@@ -19,7 +19,7 @@ class MHWPresence:
 
     def Log(self, string):
         self.ConsoleMessage = []
-        self.ConsoleMessage.append(string)
+        self.ConsoleMessage.append(string+"\n")
 
     def ScanPIDs(self):
         for process in psutil.process_iter():

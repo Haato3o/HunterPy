@@ -10,6 +10,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from threading import Thread
 import HunterPresence
 from Overlay import Ui_OverlayWindow
+import os
+import subprocess
+
+Version = "2.0.5"
 
 class Ui_Console(object):
     def __init__(self):
@@ -17,7 +21,6 @@ class Ui_Console(object):
         self.LastMessage = None
         self.ConsolePrint = []
         self.GetTheConsoleText()
-        self.Version = "2.0.1"
 
     def setupUi(self, Console):
         Console.setObjectName("Console")
@@ -411,7 +414,7 @@ class Ui_Console(object):
         if self.MHWPresence.Player.PrimaryMonster.Id in self.MHWPresence.MonstersIds and self.MHWPresence.Player.PrimaryMonster.CurrentHP > 0:
             MonsterData = {
                 "name" : self.MHWPresence.Player.PrimaryMonster.Name,
-                "hp" : [self.MHWPresence.Player.PrimaryMonster.CurrentHP, self.MHWPresence.Player.PrimaryMonster.TotalHP]
+                "hp" : [int(self.MHWPresence.Player.PrimaryMonster.CurrentHP), int(self.MHWPresence.Player.PrimaryMonster.TotalHP)]
             }
             self.OverlayUI.UpdateFirstMonster('UPDATE', MonsterData)
         else:
@@ -421,7 +424,7 @@ class Ui_Console(object):
         if self.MHWPresence.Player.SecondaryMonster.Id in self.MHWPresence.MonstersIds and self.MHWPresence.Player.SecondaryMonster.CurrentHP > 0:
             MonsterData = {
                 "name" : self.MHWPresence.Player.SecondaryMonster.Name,
-                "hp" : [self.MHWPresence.Player.SecondaryMonster.CurrentHP, self.MHWPresence.Player.SecondaryMonster.TotalHP]
+                "hp" : [int(self.MHWPresence.Player.SecondaryMonster.CurrentHP), int(self.MHWPresence.Player.SecondaryMonster.TotalHP)]
             }
             self.OverlayUI.UpdateSecondMonster('UPDATE', MonsterData)
         else:
@@ -439,12 +442,12 @@ class Ui_Console(object):
 
     def retranslateUi(self, Console):
         _translate = QtCore.QCoreApplication.translate
-        Console.setWindowTitle(_translate("Console", "HunterPy"))
+        Console.setWindowTitle(_translate("Console", f"HunterPy (v. {Version})"))
         self.enableOverlay.setText(_translate("Console", "Enable in-game overlay"))
 
     def GetTextFromPresence(self):
         message = '\n'.join(self.MHWPresence.ConsoleMessage)
-        message = message+"".join(self.ConsolePrint)
+        message = message + "".join(self.ConsolePrint)
         if message != self.LastMessage:
             self.UpdateConsoleText(message)
             self.LastMessage = message
@@ -459,7 +462,7 @@ class Ui_Console(object):
     def Log(self, text):
         if len(self.ConsolePrint) > 100:
             self.ConsolePrint = []
-        self.ConsolePrint.append("\n"+text)
+        self.ConsolePrint.append(text+"\n")
 
     def enableOverlayHandler(self):
         if self.enableOverlay.isChecked():
@@ -486,6 +489,10 @@ class Ui_Console(object):
         self.OverlayWindow.close()
         event.accept()
 
+def MainUp():
+    subprocess.Popen(f"update.exe {Version}", shell=True)
+    sys.exit()
+
 def Main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -496,4 +503,8 @@ def Main():
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    Main()
+    args = sys.argv
+    if len(args) == 1:
+        MainUp()
+    else:
+        Main()

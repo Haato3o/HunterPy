@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UpdateWindow</class>
+ <widget class="QMainWindow" name="UpdateWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>380</width>
+    <height>380</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>380</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>380</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow {
+	background-color: rgb(38, 38, 38);
+	border-radius: 3px;
+}
+
+QLabel {
+	color: white;
+}</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QProgressBar" name="updateProgress">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>230</y>
+      <width>301</width>
+      <height>7</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar {
+	background-color: rgb(79, 79, 79);
+	border-radius: 3px;
+}
+QProgressBar::chunk {
+	background-color: rgb(183, 3, 3);
+	border-radius: 3px;
+}</string>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+    <property name="textVisible">
+     <bool>false</bool>
+    </property>
+    <property name="invertedAppearance">
+     <bool>false</bool>
+    </property>
+    <property name="textDirection">
+     <enum>QProgressBar::TopToBottom</enum>
+    </property>
+    <property name="format">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="updateText">
+    <property name="geometry">
+     <rect>
+      <x>46</x>
+      <y>240</y>
+      <width>291</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>MS Reference Sans Serif</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Downloading files...</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>40</y>
+      <width>301</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Assets/hunterpylogo.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::RichText</enum>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="hunterpyqrc.qrc"/>
+ </resources>
+ <connections/>
+</ui>
