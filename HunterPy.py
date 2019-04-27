@@ -4,7 +4,7 @@ from threading import Thread
 import psutil
 
 class IDS:
-    NoMonstersZones = [0, 3.1, 5, 7, 11, 15, 23, 24, 31]
+    NoMonstersZones = [0, 3.1, 5, 7, 11, 15, 21, 23, 24, 31, 33]
     Zones = {
         3 : "Great Ravine",
         3.1 : "Main Menu",
@@ -17,10 +17,12 @@ class IDS:
         12 : "Caverns of El Dorado",
         15 : "My Room",
         18 : "Elder's Recess",
+        21 : "Gathering HUB", # During blossom event
         23 : "Training area",
         23.1 : "Arena",
         24 : "Research Base",
         31 : "Astera",
+        33 : "Astera", # During blossom event
         37 : "Rotten Vale",
         58 : "Coral Highlands",
         64 : "Wildspire Waste",
@@ -56,7 +58,7 @@ class IDS:
         "em001_00" : "Rathian",
         "em027_00" : "Teostra",
         "em109_00" : "Tobi Kadachi",
-        "em120_00" : "TziTzi Ya Ku",
+        "em120_00" : "Tzitzi-Ya-Ku",
         "em045_00" : "Uragaan",
         "em115_00" : "Vaal Hazak",
         "em105_00" : "Xeno'Jiiva",
@@ -116,8 +118,8 @@ class Game:
             self.GetAllMonstersInfo()
             self.getPlayerZoneID()
             self.PredictTarget()
-            
             time.sleep(0.2)
+        self.Logger = []
 
     def MultiThreadScan(self):
         self.Scanner = Thread(target=self.scanUntilDone)

@@ -16,9 +16,6 @@ import hashlib
 import os
 import subprocess
 
-def Log(string):
-    print(f'[UPDATE] {string}')
-
 class Update:
     Server = "https://bitbucket.org/Haato/hunterpy/raw/master/" # URL Base for the project
     def __init__(self, version):
@@ -60,7 +57,6 @@ class Update:
             self.Ui.updateText.setText("Checking version online...")
             self.hasInternet = True
             self.LatestVersion = onlineVersion.text
-            print(self.LatestVersion)
         except:
             self.hasInternet = False
             self.UpdateWindow.close()
@@ -69,14 +65,18 @@ class Update:
     def CheckIfVersionIsDifferent(self):
         if self.hasInternet:
             if self.LatestVersion != self.LocalVersion:
-                Log("Version is different!")
                 self.GetFiles()
                 self.ListLocalFiles()
                 self.GetFileQueue()
                 self.UpdateHunterPy()
             else:
-                subprocess.Popen("HunterPy.exe updated", shell=True)
+                subprocess.Popen("HunterPy.exe notupdated", shell=True)
                 self.UpdateWindow.close()
+                sys.exit()
+        else:
+            subprocess.Popen("HunterPy.exe notupdated", shell=True)
+            self.UpdateWindow.close()
+            sys.exit()
 
     def ListLocalFiles(self):
         for file in os.listdir():
@@ -88,7 +88,6 @@ class Update:
 
     def GetFiles(self):
         files = requests.request('get', Update.Server+"files.json")
-        Log("Checking for new files...")
         self.Ui.updateText.setText("Checking for new files...")
         self.Files = files.json()
 
@@ -98,10 +97,11 @@ class Update:
                 if self.LocalFiles[file] == self.Files[file]:
                     continue
                 else:
+                    if file == "update.exe":
+                        continue
                     self.UpdateQueue.append(file)
             else:
                 self.UpdateQueue.append(file)
-        Log(f"Found {len(self.UpdateQueue)} new files!")
         self.Ui.updateText.setText(f"Found {len(self.UpdateQueue)} new file(s)!")
 
     def ReplaceOldFile(self, fileName, fileBytes):
@@ -116,13 +116,13 @@ class Update:
     def UpdateHunterPy(self):
         if self.hasInternet:
             for file in self.UpdateQueue:
-                Log(f"Updating \"{file}\"...")
                 self.Ui.updateText.setText(f"Updating \"{file}\"...")
                 fBytes = self.GetFileBytes(file)
                 self.ReplaceOldFile(file, fBytes)
         self.Ui.updateText.setText("Done!")
         subprocess.Popen("HunterPy.exe updated", shell=True)
         self.UpdateWindow.close()
+        sys.exit()
 
 class Ui_UpdateWindow(object):
     def setupUi(self, UpdateWindow):
@@ -180,14 +180,13 @@ class Ui_UpdateWindow(object):
 
     def retranslateUi(self, UpdateWindow):
         _translate = QtCore.QCoreApplication.translate
-        UpdateWindow.setWindowTitle(_translate("UpdateWindow", "MainWindow"))
-        self.updateText.setText(_translate("UpdateWindow", "Initializing update..."))
+        UpdateWindow.setWindowTitle(_translate("UpdateWindow", "HunterPy Update"))
+        self.updateText.setText(_translate("UpdateWindow", "Checking for updates..."))
         self.label.setText(_translate("UpdateWindow", "<html><head/><body><p><img src=\":/Assets/hunterpylogo.png\"/></p></body></html>"))
 
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        print("Nope.")
         sys.exit()
     else:
         update = Update(sys.argv[1])

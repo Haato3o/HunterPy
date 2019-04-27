@@ -43,7 +43,7 @@ QLabel {
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>230</y>
+      <y>250</y>
       <width>301</width>
       <height>7</height>
      </rect>
@@ -61,11 +61,20 @@ QProgressBar::chunk {
 	border-radius: 3px;
 }</string>
     </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>0</number>
+    </property>
     <property name="value">
-     <number>24</number>
+     <number>-1</number>
     </property>
     <property name="textVisible">
      <bool>false</bool>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
     <property name="invertedAppearance">
      <bool>false</bool>
@@ -81,7 +90,7 @@ QProgressBar::chunk {
     <property name="geometry">
      <rect>
       <x>46</x>
-      <y>240</y>
+      <y>260</y>
       <width>291</width>
       <height>41</height>
      </rect>
@@ -103,7 +112,7 @@ QProgressBar::chunk {
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>40</y>
+      <y>60</y>
       <width>301</width>
       <height>191</height>
      </rect>

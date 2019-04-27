@@ -483,22 +483,7 @@
     <cursorShape>ArrowCursor</cursorShape>
    </property>
    <property name="styleSheet">
-    <string notr="true">QCheckBox {
-	border: 2px solid rgb(35, 35, 35);
-	padding: 2px 2px 2px 2px;
-	border-radius: 10px;
-	color: white;
-}
-QCheckBox:checked {
-	background-color: #58d142;
-}
-
-QCheckBox:unchecked {
-	background-color: #e85151;
-}
-QCheckBox:hover {
-	opacity: 50%;
-}</string>
+    <string notr="true"/>
    </property>
    <widget class="QScrollArea" name="ConsoleBox">
     <property name="enabled">
@@ -963,6 +948,9 @@ QScrollBar::add-line:vertical {
 QScrollBar::sub-line:vertical {
 	border: none;
 	background-color: none;
+}
+QScrollBar::handle:vertical:hover {
+	background-color: rgb(55, 55, 55)
 }</string>
     </property>
     <property name="frameShape">
@@ -997,12 +985,6 @@ QScrollBar::sub-line:vertical {
      <property name="autoFillBackground">
       <bool>true</bool>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QTextBrowser {
-	background-color: rgb(61, 61, 61);
-	color: white;
-}</string>
-     </property>
      <widget class="QTextBrowser" name="TextBox">
       <property name="geometry">
        <rect>
@@ -1027,7 +1009,10 @@ QScrollBar::sub-line:vertical {
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">QTextBrowser {
+	background-color: rgb(65, 65, 65);
+	color: white;
+}</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -1121,7 +1106,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>460</x>
-      <y>10</y>
+      <y>0</y>
       <width>231</width>
       <height>31</height>
      </rect>
@@ -1142,8 +1127,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="enableRichPresence">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>10</y>
+      <x>460</x>
+      <y>30</y>
       <width>231</width>
       <height>31</height>
      </rect>
@@ -1164,8 +1149,136 @@ p, li { white-space: pre-wrap; }
      <string>Enable Discord presence</string>
     </property>
    </widget>
+   <widget class="QLabel" name="hunterPyLogo">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>5</y>
+      <width>211</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Console/hunterPyConsole.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="changelogWindow" native="true">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>701</width>
+      <height>401</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget {
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 3px;
+}
+QTextBrowser {
+	background-color: white;
+}
+QPushButton {
+	background-color: rgb(191, 0, 0);
+	color: white;
+	border-radius: 3px
+}
+QPushButton:hover {
+	background-color: rgb(154, 0, 0);
+}
+QScrollBar:vertical {
+	border-width: 1px;
+    background-color: white;
+	width: 10px;
+	padding-right: 2px;
+	border-radius: 3px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+QScrollBar::handle:vertical {
+	background-color: rgb(160, 160, 160);
+	min-width: 5px;
+	border-radius: 3px;
+}
+QScrollBar::add-page:vertical {
+	background-color: none;
+}
+QScrollBar::sub-page:vertical {
+	background-color: none;
+}
+QScrollBar::add-line:vertical {
+	border: none;
+	background-color: none;
+}
+QScrollBar::sub-line:vertical {
+	border: none;
+	background-color: none;
+}
+QScrollBar::handle:vertical:hover {
+	background-color: rgb(200, 200, 200);
+}</string>
+    </property>
+    <widget class="QWidget" name="changelogWindBG" native="true">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>19</y>
+       <width>591</width>
+       <height>361</height>
+      </rect>
+     </property>
+     <widget class="QPushButton" name="changeLogButton">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>320</y>
+        <width>121</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>MS Reference Sans Serif</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>Ok!</string>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="changelogText">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>571</width>
+        <height>311</height>
+       </rect>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="mainResources.qrc"/>
+ </resources>
  <connections/>
 </ui>

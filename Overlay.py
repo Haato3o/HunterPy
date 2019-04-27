@@ -29,6 +29,7 @@ class Ui_OverlayWindow(object):
                 font = QtGui.QFont()
                 font.setFamily("MS Reference Sans Serif")
                 font.setPointSize(12)
+                font.setBold(True)
                 self.firstMonsterName.setFont(font)
                 self.firstMonsterName.setAlignment(QtCore.Qt.AlignCenter)
                 self.firstMonsterName.setObjectName("firstMonsterName")
@@ -195,6 +196,7 @@ class Ui_OverlayWindow(object):
                 font = QtGui.QFont()
                 font.setFamily("MS Reference Sans Serif")
                 font.setPointSize(12)
+                font.setBold(True)
                 self.secondMonsterName.setFont(font)
                 self.secondMonsterName.setAlignment(QtCore.Qt.AlignCenter)
                 self.secondMonsterName.setObjectName("secondMonsterName")
@@ -511,6 +513,7 @@ class Ui_OverlayWindow(object):
                 font = QtGui.QFont()
                 font.setFamily("MS Reference Sans Serif")
                 font.setPointSize(12)
+                font.setBold(True)
                 self.thirdMonsterName.setFont(font)
                 self.thirdMonsterName.setAlignment(QtCore.Qt.AlignCenter)
                 self.thirdMonsterName.setObjectName("thirdMonsterName")
@@ -613,6 +616,7 @@ class Ui_OverlayWindow(object):
                         file = open("config.json", "r")
                         config = json.load(file)
                         file.close()
+                        self.Config = config
                         self.OverlayConfig = config["Overlay"]
                         self.OverlayPosition = self.OverlayConfig["OverlayPosition"]
                         if lock == True:
@@ -626,16 +630,16 @@ class Ui_OverlayWindow(object):
                 QtCore.QTimer.singleShot(1, self.MoveOverlay)
 
         def SaveConfig(self):
+                #print(self.OverlayEnabled,"|",self.OverlayConfig["OverlayEnabled"])
                 if self.OverlayEnabled != self.OverlayConfig["OverlayEnabled"]:
                         file = open("config.json", "w")
-                        config = dict(Overlay=dict(OverlayEnabled=self.OverlayEnabled, OverlayPosition=self.OverlayPosition))
-                        json.dump(config, file, indent=4)
+                        json.dump(self.Config, file, indent=4)
                         file.close()
-                        return
+                return
 
         def makeConfig(self):
                 f = open("config.json", "w")
-                configTemplate = dict(Overlay=dict(OverlayEnabled=False, OverlayPosition=[0, 0]))
+                configTemplate = dict(Overlay=dict(OverlayEnabled=False, OverlayPosition=[0, 0]), RichPresence=dict(Enabled=True))
                 json.dump(configTemplate, f, indent=4)
                 self.OverlayConfig = configTemplate["Overlay"]
                 self.OverlayPosition = self.OverlayConfig["OverlayPosition"]

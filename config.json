@@ -2,8 +2,11 @@
     "Overlay": {
         "OverlayEnabled": true,
         "OverlayPosition": [
-            351,
-            10
+            0,
+            0
         ]
+    },
+    "RichPresence": {
+        "Enabled": true
     }
 }

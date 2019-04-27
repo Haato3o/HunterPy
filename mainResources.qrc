@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Console">
+    <file>hunterPyConsole.png</file>
+  </qresource>
+</RCC>

@@ -3,6 +3,7 @@ import HunterPy
 from presence import DiscordPresence
 import time
 from threading import Thread
+import json
 
 class MHWPresence:
     def __init__(self):
@@ -16,10 +17,13 @@ class MHWPresence:
         self.Target = None
         self.MonstersIds = HunterPy.IDS.Monsters
         self.ConsoleMessage = []
+        self.Enabled = True
 
     def Log(self, string):
-        self.ConsoleMessage = []
-        self.ConsoleMessage.append(string+"\n")
+        if string in self.ConsoleMessage:
+            return
+        else:
+            self.ConsoleMessage.append(string)
 
     def ScanPIDs(self):
         for process in psutil.process_iter():
@@ -33,6 +37,7 @@ class MHWPresence:
     def waitGameOpen(self):
         while self.GamePID == None:
             self.ScanPIDs()
+            time.sleep(0.5)
             if self.GamePID != None:
                 self.Start()
             time.sleep(1.5)
@@ -62,6 +67,24 @@ class MHWPresence:
         else:
             return f"Exploring"
         
+    def checkIfPresenceEnabled(self):
+        config = open("config.json", "r")
+        configJson = json.load(config)
+        config.close()
+        try:
+            self.Enabled = configJson["RichPresence"]["Enabled"]
+        except KeyError:
+            self.Log("Config.json is invalid! Making a new one...")
+            try:
+                overlayDict = configJson["Overlay"]
+                configTemplate = {"Overlay": overlayDict, "RichPresence":{"Enabled":True}}
+            except KeyError:
+                configTemplate = dict(Overlay=dict(OverlayEnabled=False, OverlayPosition=[0, 0]), RichPresence=dict(Enabled=True))
+            finally:
+                config = open("config.json", "w")
+                json.dump(configTemplate, config, indent=4)
+                config.close()
+                self.Log("New Config.json saved!")
 
     def getTargetHP(self):
         noMonsterZones = HunterPy.IDS.NoMonstersZones
@@ -87,6 +110,9 @@ class MHWPresence:
     def presenceUpdate(self):
         if self.PlayerInfo.Name == "":
             return
+        if self.Enabled == False:
+            self.Presence.clearPresence()
+            return
         self.Presence.changePresence(
             pid = self.GamePID,
             details = self.formatAndGetDetails(),
@@ -111,7 +137,7 @@ class MHWPresence:
     def Start(self):
         try:
             while True:
-                
+                self.checkIfPresenceEnabled()
                 if self.GamePID == None or psutil.pid_exists(self.GamePID) == False:
                     self.ScanPIDs()
                     self.Presence.clearPresence()
