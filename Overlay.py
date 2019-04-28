@@ -11,19 +11,20 @@ import json
 
 class Ui_OverlayWindow(object):
         def setupUi(self, OverlayWindow):
-                self.OverlayWindow = OverlayWindow
+                
                 OverlayWindow.setObjectName("OverlayWindow")
                 OverlayWindow.resize(742, 93)
                 OverlayWindow.setMinimumSize(QtCore.QSize(742, 93))
                 OverlayWindow.setMaximumSize(QtCore.QSize(742, 93))
                 OverlayWindow.setWindowOpacity(1.0)
                 # Make background transparent
-                OverlayWindow.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
+                OverlayWindow.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool)
                 OverlayWindow.setAttribute(QtCore.Qt.WA_TranslucentBackground)
                 ##
                 OverlayWindow.setAutoFillBackground(False)
                 OverlayWindow.setStyleSheet("QLabel {\n"
         "    color: white;}\nQProgressBar {\n background-color: rgba(75, 75, 75, 0.5);\nborder-radius: 2px;\n}\nQProgressBar::chunk {\nborder-radius: 2px;\n}")
+                self.OverlayWindow = OverlayWindow
                 self.firstMonsterName = QtWidgets.QLabel(OverlayWindow)
                 self.firstMonsterName.setGeometry(QtCore.QRect(0, 0, 211, 31))
                 font = QtGui.QFont()
@@ -533,7 +534,6 @@ class Ui_OverlayWindow(object):
                 # Keep loading it
                 QtCore.QTimer.singleShot(1, self.LoadJson)
                 #### HIDE ELEMENTS #####
-                
                 self.firstMonsterHPBar.hide()
                 self.firstMonsterHPText.hide()
                 self.firstMonsterName.hide()
@@ -630,7 +630,6 @@ class Ui_OverlayWindow(object):
                 QtCore.QTimer.singleShot(1, self.MoveOverlay)
 
         def SaveConfig(self):
-                #print(self.OverlayEnabled,"|",self.OverlayConfig["OverlayEnabled"])
                 if self.OverlayEnabled != self.OverlayConfig["OverlayEnabled"]:
                         file = open("config.json", "w")
                         json.dump(self.Config, file, indent=4)

@@ -15,6 +15,7 @@ import sys
 import hashlib
 import os
 import subprocess
+import time
 
 class Update:
     Server = "https://bitbucket.org/Haato/hunterpy/raw/master/" # URL Base for the project
@@ -30,10 +31,8 @@ class Update:
         self.Progress = 0
 
     def start(self):
-        self.StartUpdateThread()
         self.OpenUpdateWindow()
         
-
     def StartUpdateThread(self):
         t = Thread(target=self.StartUpdate)
         t.daemon = True
@@ -49,6 +48,7 @@ class Update:
         self.Ui = Ui_UpdateWindow()
         self.Ui.setupUi(self.UpdateWindow)
         self.UpdateWindow.show()
+        self.StartUpdateThread()
         sys.exit(app.exec_())
 
     def CheckVersionOnline(self):
@@ -58,9 +58,9 @@ class Update:
             self.hasInternet = True
             self.LatestVersion = onlineVersion.text
         except:
+            self.Ui.updateText.setText("Failed to check latest version online...")
             self.hasInternet = False
-            self.UpdateWindow.close()
-            return
+            time.sleep(2)
 
     def CheckIfVersionIsDifferent(self):
         if self.hasInternet:
@@ -72,11 +72,9 @@ class Update:
             else:
                 subprocess.Popen("HunterPy.exe notupdated", shell=True)
                 self.UpdateWindow.close()
-                sys.exit()
         else:
             subprocess.Popen("HunterPy.exe notupdated", shell=True)
             self.UpdateWindow.close()
-            sys.exit()
 
     def ListLocalFiles(self):
         for file in os.listdir():

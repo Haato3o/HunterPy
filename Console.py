@@ -16,7 +16,7 @@ import sys
 import mainResources_rc
 import json
 
-Version = "2.0.72"
+Version = "2.0.75"
 
 class Ui_Console(object):
     def __init__(self):
@@ -504,7 +504,13 @@ class Ui_Console(object):
 
         self.OpenOverlayWindow()
         QtCore.QTimer.singleShot(1, self.UpdateOverlay)
+        # Close hook
         Console.closeEvent = self.closeEverything
+        # Minimize to taskbar
+        Console.hideEvent = self.minToTray
+        self.Console = Console
+        self.trayIcon = QtWidgets.QSystemTrayIcon(QtGui.QIcon("icon.ico"), parent=Console)
+        self.trayIcon.activated.connect(self.showMainWindow)
         ### Rich presence checkbox
         if self.MHWPresence.Enabled:
             self.enableRichPresence.setChecked(True)
@@ -521,6 +527,21 @@ class Ui_Console(object):
         self.hunterPyLogo.setText(_translate("Console", "<html><head/><body><p><img src=\":/Console/hunterPyConsole.png\"/></p></body></html>"))
         self.changeLogButton.setText(_translate("Console", "Ok!"))
 
+    def showMainWindow(self, event):
+        if event == QtWidgets.QSystemTrayIcon.Trigger:
+            pass
+        elif event == QtWidgets.QSystemTrayIcon.DoubleClick:
+            self.Console.showNormal()
+            self.Console.activateWindow()
+            #self.Console
+            #QtWidgets.QMainWindow.activateWindow
+        
+
+    def minToTray(self, event):
+        event.ignore()
+        self.Console.hide()
+        self.trayIcon.show()
+
     def checkIfJustUpdated(self):
         ### If program just updated
         if self.JustUpdated:
@@ -533,8 +554,7 @@ class Ui_Console(object):
             changelog = open("changelog.log", "r")
             changelogBytes = changelog.read()
             changelog.close()
-        except Exception as e:
-            print(e)
+        except:
             changelogBytes = "ERROR!\nNO CHANGELOG FOUND!"
         return changelogBytes
 
