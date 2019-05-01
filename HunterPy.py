@@ -5,6 +5,17 @@ import psutil
 
 class IDS:
     NoMonstersZones = [0, 3.1, 5, 7, 11, 15, 21, 23, 24, 31, 33]
+    Fertilizers = {
+        8 : "Growth Up (L)",
+        7 : "Growth Up (S)",
+        6 : "Bug/Honey Harvest Up (L)",
+        5 : "Bug/Honey Harvest Up (S)",
+        4 : "Fungi Harvest Up (L)",
+        3 : "Fungi Harvest Up (S)",
+        2 : "Plant Harvest Up (L)",
+        1 : "Plant Harvest Up (S)",
+        0 : "Empty"
+    }
     Zones = {
         3 : "Great Ravine",
         3.1 : "Main Menu",
@@ -74,6 +85,9 @@ class Player:
         self.LastZoneID = 0
         self.ZoneName = ""
         self.SessionID = ""
+        self.HarvestedItemsCounter = 0
+        self.HarvestBox = []
+        self.HarvestBoxFertilizers = []
         
 
 class Monster:
@@ -113,6 +127,7 @@ class Game:
             self.getPlayerLevel()
             self.getPlayerName()
             self.getSessionID()
+            self.getFertilizerCount()
             #self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
@@ -171,10 +186,10 @@ class Game:
         AddressBase = Game.baseAddress + Game.MonsterOffset
         offsets = [0xAF738, 0x47CDE0]
         thirdMonsterAddress = self.MemoryReader.GetMultilevelPtr(AddressBase, offsets)
-        thirdMonsterAddress = self.MemoryReader.readInteger(thirdMonsterAddress + 0x0)
+        thirdMonsterAddress = self.MemoryReader.readLongLong(thirdMonsterAddress + 0x0)
         thirdMonsterAddress = thirdMonsterAddress + 0x0
         secondMonsterAddress = thirdMonsterAddress + 0x28
-        firstMonsterAddress = self.MemoryReader.readInteger(secondMonsterAddress) + 0x28
+        firstMonsterAddress = self.MemoryReader.readLongLong(secondMonsterAddress) + 0x28
         self.PrimaryMonster.Address = firstMonsterAddress
         self.SecondaryMonster.Address = secondMonsterAddress
         self.ThirtiaryMonster.Address = thirdMonsterAddress
@@ -228,15 +243,15 @@ class Game:
     ## Get 1st info
     def GetFirstMonsterID(self):
         Address = self.PrimaryMonster.Address
-        Address = self.MemoryReader.readInteger(Address)
-        namePointer = self.MemoryReader.readInteger(Address + 0x290)
+        Address = self.MemoryReader.readLongLong(Address)
+        namePointer = self.MemoryReader.readLongLong(Address + 0x290)
         Id = self.MemoryReader.readString(namePointer + 0x0c, 64).decode().split('\\')[4].strip('\x00')
         self.PrimaryMonster.Id = Id
 
     def getFirstMonsterTotalHP(self):
         Address = self.PrimaryMonster.Address
-        Address = self.MemoryReader.readInteger(Address)
-        monsterHPComponent = self.MemoryReader.readInteger(Address+0x129D8+0x48)
+        Address = self.MemoryReader.readLongLong(Address)
+        monsterHPComponent = self.MemoryReader.readLongLong(Address+0x129D8+0x48)
         monsterTotalHpAddress = monsterHPComponent + 0x60
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHpAddress)
         if self.PrimaryMonster.Id != None and self.PrimaryMonster.Id.startswith('ems'):
@@ -255,15 +270,15 @@ class Game:
     ## Get 2nd info
     def GetSecondMonsterID(self):
         Address = self.SecondaryMonster.Address
-        Address = self.MemoryReader.readInteger(Address)
-        namePointer = self.MemoryReader.readInteger(Address + 0x290)
+        Address = self.MemoryReader.readLongLong(Address)
+        namePointer = self.MemoryReader.readLongLong(Address + 0x290)
         Id = self.MemoryReader.readString(namePointer + 0x0c, 64).decode().split('\\')[4].strip('\x00')
         self.SecondaryMonster.Id = Id
 
     def getSecondMonsterTotalHP(self):
         Address = self.SecondaryMonster.Address
-        Address = self.MemoryReader.readInteger(Address)
-        monsterHPComponent = self.MemoryReader.readInteger(Address+0x129D8+0x48)
+        Address = self.MemoryReader.readLongLong(Address)
+        monsterHPComponent = self.MemoryReader.readLongLong(Address+0x129D8+0x48)
         monsterTotalHPAddress = monsterHPComponent + 0x60
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHPAddress)
         if self.SecondaryMonster.Id != None and self.SecondaryMonster.Id.startswith('ems'):
@@ -282,13 +297,13 @@ class Game:
     ## Get 3rd info
     def GetThirdMonsterID(self):
         Address = self.ThirtiaryMonster.Address
-        namePointer = self.MemoryReader.readInteger(Address + 0x290)
+        namePointer = self.MemoryReader.readLongLong(Address + 0x290)
         Id = self.MemoryReader.readString(namePointer + 0x0c, 64).decode().split('\\')[4].strip('\x00')
         self.ThirtiaryMonster.Id = Id
 
     def getThirtiaryMonsterTotalHP(self):
         Address = self.ThirtiaryMonster.Address
-        monsterHPComponent = self.MemoryReader.readInteger(Address+0x129D8+0x48)
+        monsterHPComponent = self.MemoryReader.readLongLong(Address+0x129D8+0x48)
         monsterTotalHPAddress = monsterHPComponent + 0x60
         monsterTotalHP = self.MemoryReader.readFloat(monsterTotalHPAddress)
         self.getThirtiaryMonsterCurrentHP(monsterTotalHPAddress)
@@ -310,6 +325,30 @@ class Game:
         self.PlayerInfo.SessionID = SessionID.decode()
         self.Log(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})\n')
 
+    def getFertilizerCount(self):
+        self.PlayerInfo.HarvestBoxFertilizers = []
+        Address = Game.levelAddress
+        firstFertilizerAddress = Address+0x673EC
+        secondFertilizerAddress = firstFertilizerAddress+0x10
+        thirdFertilizerAddress = secondFertilizerAddress+0x10
+        fourthFertilizerAddress = thirdFertilizerAddress+0x10
+        self.Log(f"FIRST FERTILIZER ADDRESS: {hex(firstFertilizerAddress)}")
+        self.PlayerInfo.HarvestBoxFertilizers.append({"name":IDS.Fertilizers[self.MemoryReader.readInteger(firstFertilizerAddress-0x4)],"count":self.MemoryReader.readInteger(firstFertilizerAddress)})
+        self.PlayerInfo.HarvestBoxFertilizers.append({"name":IDS.Fertilizers[self.MemoryReader.readInteger(secondFertilizerAddress-0x4)],"count":self.MemoryReader.readInteger(secondFertilizerAddress)})
+        self.PlayerInfo.HarvestBoxFertilizers.append({"name":IDS.Fertilizers[self.MemoryReader.readInteger(thirdFertilizerAddress-0x4)],"count":self.MemoryReader.readInteger(thirdFertilizerAddress)})
+        self.PlayerInfo.HarvestBoxFertilizers.append({"name":IDS.Fertilizers[self.MemoryReader.readInteger(fourthFertilizerAddress-0x4)],"count":self.MemoryReader.readInteger(fourthFertilizerAddress)})
+        self.getHarvestInBox(fourthFertilizerAddress)
+
+    def getHarvestInBox(self, fourthFertilizerAddress):
+        Address = fourthFertilizerAddress + 0x10
+        self.PlayerInfo.HarvestedItemsCounter = 0
+        self.PlayerInfo.HarvestBox = []
+        for address in range(Address, Address+0x1f0, 0x10):
+            memoryValue = self.MemoryReader.readInteger(address)
+            self.PlayerInfo.HarvestBox.append(memoryValue)
+            if memoryValue > 0:
+                self.PlayerInfo.HarvestedItemsCounter += 1
+            
     ## Zones
     def UpdateLastZoneID(self):
         self.PlayerInfo.LastZoneID = self.PlayerInfo.ZoneID 

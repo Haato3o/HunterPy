@@ -15,8 +15,9 @@ import subprocess
 import sys
 import mainResources_rc
 import json
+from Config import *
 
-Version = "2.0.75"
+Version = "2.0.81"
 
 class Ui_Console(object):
     def __init__(self):
@@ -25,6 +26,9 @@ class Ui_Console(object):
         self.ConsolePrint = ["\n\n====== CONSOLE =====\n"]
         self.GetTheConsoleText()
         self.JustUpdated = False
+        self.closedWindow = False
+        self.ConfigModule = Config()
+        self.Config = self.ConfigModule.Config
 
     def setupUi(self, Console):
         Console.setObjectName("Console")
@@ -496,26 +500,38 @@ class Ui_Console(object):
         self.retranslateUi(Console)
         QtCore.QMetaObject.connectSlotsByName(Console)
 
+        self.OpenOverlayWindow()
+        self.loadConfigEvent()
+
         self.enableOverlay.setCheckable(True)
         self.enableOverlay.stateChanged.connect(self.enableOverlayHandler)
 
         self.enableRichPresence.setCheckable(True)
         self.enableRichPresence.stateChanged.connect(self.enablePresenceHandler)
-
-        self.OpenOverlayWindow()
+        
+        
         QtCore.QTimer.singleShot(1, self.UpdateOverlay)
         # Close hook
         Console.closeEvent = self.closeEverything
         # Minimize to taskbar
         Console.hideEvent = self.minToTray
         self.Console = Console
-        self.trayIcon = QtWidgets.QSystemTrayIcon(QtGui.QIcon("icon.ico"), parent=Console)
+        self.trayIcon = QtWidgets.QSystemTrayIcon(QtGui.QIcon("icon.ico"), parent=self.Console)
         self.trayIcon.activated.connect(self.showMainWindow)
+        self.trayIcon.show()
+
         ### Rich presence checkbox
         if self.MHWPresence.Enabled:
             self.enableRichPresence.setChecked(True)
         else:
             self.enableRichPresence.setChecked(False)
+        ### Overlay checkbox
+        if self.OverlayUI.Enabled:
+            self.enableOverlay.setChecked(True)
+            self.OverlayWindow.show()
+        else:
+            self.enableOverlay.setChecked(False)
+            self.OverlayWindow.hide()
 
         self.changeLogButton.clicked.connect(self.hideChangelog)
 
@@ -527,20 +543,32 @@ class Ui_Console(object):
         self.hunterPyLogo.setText(_translate("Console", "<html><head/><body><p><img src=\":/Console/hunterPyConsole.png\"/></p></body></html>"))
         self.changeLogButton.setText(_translate("Console", "Ok!"))
 
+    def loadConfigEvent(self):
+        self.ConfigModule.LoadConfig()
+        self.Config = self.ConfigModule.Config
+        self.checkIfWidgetsEnabled()
+        QtCore.QTimer.singleShot(1, self.loadConfigEvent)
+
+    def checkIfWidgetsEnabled(self):
+        # Check if they're enabled
+        self.MHWPresence.Enabled = self.Config["RichPresence"]["Enabled"]
+        self.OverlayUI.Enabled = self.Config["Overlay"]["Enabled"]
+        self.OverlayUI.FertilizerWidgetEnabled = self.Config["Overlay"]["HarvestBoxComponent"]["Enabled"]
+        #Get Position of overlay widgets
+        self.OverlayUI.monsterWidgetPosition = self.Config["Overlay"]["MonstersComponent"]["Position"]
+        self.OverlayUI.fertWidgetPosition = self.Config["Overlay"]["HarvestBoxComponent"]["Position"]
+
     def showMainWindow(self, event):
         if event == QtWidgets.QSystemTrayIcon.Trigger:
             pass
         elif event == QtWidgets.QSystemTrayIcon.DoubleClick:
             self.Console.showNormal()
             self.Console.activateWindow()
-            #self.Console
-            #QtWidgets.QMainWindow.activateWindow
         
-
     def minToTray(self, event):
-        event.ignore()
-        self.Console.hide()
-        self.trayIcon.show()
+        if event.type() == 18 and self.closedWindow == False:
+            self.Console.hide()
+            self.trayIcon.show()
 
     def checkIfJustUpdated(self):
         ### If program just updated
@@ -568,11 +596,21 @@ class Ui_Console(object):
         self.changelogText.setText(changelog)
 
     def UpdateOverlay(self):
-        if self.OverlayUI.OverlayEnabled and self.MHWPresence.Scanning:
+        if self.OverlayUI.Enabled and self.MHWPresence.Scanning:
+            self.OverlayUI.showMonstersWidget()
             self.firstMonsterInfo()
             self.secondMonsterInfo()
             self.thirdMonsterInfo()
+            self.updateFertilizerOverlay()
         QtCore.QTimer.singleShot(1, self.UpdateOverlay)
+
+    def updateFertilizerOverlay(self):
+        if self.OverlayUI.FertilizerWidgetEnabled and self.MHWPresence.PlayerInfo.ZoneID in self.MHWPresence.NoMonsterZones and len(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers) == 4 and self.MHWPresence.Scanning:
+            self.OverlayUI.showFertilizerWindow()
+            self.OverlayUI.updateFertilizerCounter(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers)
+            self.OverlayUI.updateHarvestedTotal(self.MHWPresence.PlayerInfo.HarvestedItemsCounter)
+        else:
+            self.OverlayUI.hideFertilizerWindow()
 
     def firstMonsterInfo(self):
         if self.MHWPresence.Player.PrimaryMonster.Id in self.MHWPresence.MonstersIds and self.MHWPresence.Player.PrimaryMonster.CurrentHP > 0:
@@ -631,6 +669,7 @@ class Ui_Console(object):
             self.Log("Overlay is now enabled!")
         else:
             self.OverlayWindow.hide()
+            self.OverlayUI.hideMonstersWidget()
             self.setOverlayEnabled(False)
             self.Log("Overlay is now disabled!")
 
@@ -638,17 +677,14 @@ class Ui_Console(object):
         self.OverlayWindow = QtWidgets.QMainWindow()
         self.OverlayUI = Ui_OverlayWindow()
         self.OverlayUI.setupUi(self.OverlayWindow)
-        if self.OverlayUI.OverlayEnabled:
-            self.enableOverlay.setChecked(True)
-            self.OverlayWindow.show()
-        else:
-            self.enableOverlay.setChecked(False)
-            self.OverlayWindow.hide()
 
     def closeEverything(self, event):
+        self.closedWindow = True
         self.OverlayWindow.close()
+        self.trayIcon.hide()
         event.accept()
-
+        
+        
     def enablePresenceHandler(self):
         if self.enableRichPresence.isChecked():
             self.Log("Rich presence is now enabled!")
@@ -662,23 +698,18 @@ class Ui_Console(object):
             self.MHWPresence.checkIfPresenceEnabled()
 
     def setOverlayEnabled(self, bool):
-        c = open("config.json", "r")
-        cj = json.load(c)
-        c.close()
-        cj["Overlay"]["OverlayEnabled"] = bool
-        c = open("config.json", "w")
-        json.dump(cj, c, indent=4)
-        c.close()
-        self.OverlayUI.OverlayEnabled = bool
+        self.ConfigModule.LoadConfig()
+        self.Config = self.ConfigModule.Config
+        self.Config["Overlay"]["Enabled"] = bool
+        self.ConfigModule.SaveConfig()
+        self.OverlayUI.Enabled = bool
 
     def setPresenceEnabled(self, bool):
-        c = open("config.json", "r")
-        cj = json.load(c)
-        c.close()
-        cj["RichPresence"]["Enabled"] = bool
-        c = open("config.json", "w")
-        json.dump(cj, c, indent=4)
-        c.close()
+        self.ConfigModule.LoadConfig()
+        self.Config = self.ConfigModule.Config
+        self.Config["RichPresence"]["Enabled"] = bool
+        self.MHWPresence.Enabled = bool
+        self.ConfigModule.SaveConfig()
 
     def hideChangelog(self, event=None):
         self.ConsoleBox.setGraphicsEffect(None)

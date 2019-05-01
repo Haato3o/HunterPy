@@ -10,14 +10,15 @@ class MHWPresence:
         self.Scanning = False
         self.GamePID = None
         #self.waitGameOpen()
+        self.ConsoleMessage = []
         self.ThreadScanGamePID()
         self.Player = None
         self.PlayerInfo = None
         self.Presence = DiscordPresence()
         self.Target = None
         self.MonstersIds = HunterPy.IDS.Monsters
-        self.ConsoleMessage = []
         self.Enabled = True
+        self.NoMonsterZones = HunterPy.IDS.NoMonstersZones
 
     def Log(self, string):
         if string in self.ConsoleMessage:

@@ -47,18 +47,18 @@ class Update:
         self.UpdateWindow = QtWidgets.QMainWindow()
         self.Ui = Ui_UpdateWindow()
         self.Ui.setupUi(self.UpdateWindow)
-        self.UpdateWindow.show()
-        self.StartUpdateThread()
+        QtCore.QTimer.singleShot(1000, self.StartUpdateThread)
         sys.exit(app.exec_())
 
     def CheckVersionOnline(self):
         try:
-            onlineVersion = requests.request('get', Update.Server+"version.txt")
             self.Ui.updateText.setText("Checking version online...")
+            onlineVersion = requests.request('get', Update.Server+"version.txt", timeout=3)
             self.hasInternet = True
             self.LatestVersion = onlineVersion.text
+            time.sleep(1.5)
         except:
-            self.Ui.updateText.setText("Failed to check latest version online...")
+            self.Ui.updateText.setText("Failed to get latest version online...")
             self.hasInternet = False
             time.sleep(2)
 
@@ -70,6 +70,8 @@ class Update:
                 self.GetFileQueue()
                 self.UpdateHunterPy()
             else:
+                self.Ui.updateText.setText("No new version found!")
+                time.sleep(1)
                 subprocess.Popen("HunterPy.exe notupdated", shell=True)
                 self.UpdateWindow.close()
         else:
@@ -172,9 +174,9 @@ class Ui_UpdateWindow(object):
         self.label.setTextFormat(QtCore.Qt.RichText)
         self.label.setObjectName("label")
         UpdateWindow.setCentralWidget(self.centralwidget)
-
         self.retranslateUi(UpdateWindow)
         QtCore.QMetaObject.connectSlotsByName(UpdateWindow)
+        UpdateWindow.showNormal()
 
     def retranslateUi(self, UpdateWindow):
         _translate = QtCore.QCoreApplication.translate
