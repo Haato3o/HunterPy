@@ -43,6 +43,7 @@ class Config:
             file.close()
         except FileNotFoundError:
             self.MakeConfig()
+            self.LoadConfig()
         except json.decoder.JSONDecodeError:
             pass
     

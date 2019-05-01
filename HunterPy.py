@@ -128,7 +128,7 @@ class Game:
             self.getPlayerName()
             self.getSessionID()
             self.getFertilizerCount()
-            #self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
+            self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
             self.getPlayerZoneID()

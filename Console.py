@@ -17,7 +17,7 @@ import mainResources_rc
 import json
 from Config import *
 
-Version = "2.0.82"
+Version = "2.0.83"
 
 class Ui_Console(object):
     def __init__(self):
@@ -688,14 +688,11 @@ class Ui_Console(object):
     def enablePresenceHandler(self):
         if self.enableRichPresence.isChecked():
             self.Log("Rich presence is now enabled!")
-            self.MHWPresence.checkIfPresenceEnabled()
             self.setPresenceEnabled(True)
-            self.MHWPresence.checkIfPresenceEnabled()
         else:
             self.Log("Rich presence is now disabled!")
-            self.MHWPresence.checkIfPresenceEnabled()
             self.setPresenceEnabled(False)
-            self.MHWPresence.checkIfPresenceEnabled()
+
 
     def setOverlayEnabled(self, bool):
         self.ConfigModule.LoadConfig()
@@ -749,7 +746,7 @@ def Main(arg):
     ui.setupUi(Console)
     if arg == "updated":
         ui.JustUpdated = True
-        GetNewUpdater()
+        #GetNewUpdater()
     else:
         ui.JustUpdated = False
     ui.checkIfJustUpdated()
