@@ -4,7 +4,7 @@ from threading import Thread
 import psutil
 
 class IDS:
-    NoMonstersZones = [0, 3.1, 5, 7, 11, 15, 21, 23, 24, 31, 33]
+    NoMonstersZones = [3.1, 5, 7, 11, 15, 21, 23, 24, 31, 33]
     Fertilizers = {
         8 : "Growth Up (L)",
         7 : "Growth Up (S)",

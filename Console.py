@@ -17,7 +17,7 @@ import mainResources_rc
 import json
 from Config import *
 
-Version = "2.0.81"
+Version = "2.0.82"
 
 class Ui_Console(object):
     def __init__(self):
