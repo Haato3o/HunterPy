@@ -120,7 +120,7 @@ class MHWPresence:
         while self.Scanning:
             self.ConsoleMessage = []
             self.ConsoleMessage.append("".join(self.Player.Logger))
-            time.sleep(0.8)
+            time.sleep(0.1)
 
     def ScannerConsole(self):
         s = Thread(target=self.GetMessageFromHunterPy)

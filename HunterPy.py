@@ -3,8 +3,30 @@ import time, os
 from threading import Thread
 import psutil
 
-class IDS:
+class IDS: # Countains every id for stuff in the game, might remake it later to support translations and stuff
     NoMonstersZones = [3.1, 5, 7, 11, 15, 21, 23, 24, 31, 33]
+    Mantles = { # Credits to https://github.com/Ezekial711/MonsterHunterWorldModding/wiki/Specialized-Tools-IDs
+        0 : "Ghillie Mantle",
+        1 : "Temporal Mantle",
+        2 : "Health Booster",
+        3 : "Rocksteady Mantle",
+        4 : "Challenger Mantle",
+        5 : "Vitality Mantle",
+        6 : "Fireproof Mantle",
+        7 : "Waterproof Mantle",
+        8 : "Iceproof Mantle",
+        9 : "Thunderproof Mantle",
+        10 : "Dragonproof Mantle",
+        11 : "Cleanser Booster", 
+        14 : "Glider Mantle",
+        15 : "Evasion Mantle",
+        16 : "Impact Mantle",
+        17 : "Apothecary Mantle",
+        18 : "Immunity Mantle",
+        19 : "Affinity Booster",
+        20 : "Bandit Mantle",
+        29 : "Assassin's Hood Mantle"
+    }
     Fertilizers = {
         8 : "Growth Up (L)",
         7 : "Growth Up (S)",
@@ -77,27 +99,28 @@ class IDS:
     }
 
 
-class Player:
+class Player: # player class
     def __init__(self):
-        self.Name = ""
-        self.Level = 0
-        self.ZoneID = 0
-        self.LastZoneID = 0
-        self.ZoneName = ""
-        self.SessionID = ""
-        self.HarvestedItemsCounter = 0
-        self.HarvestBox = []
-        self.HarvestBoxFertilizers = []
-        
+        self.Name = "" # Player Name (only support player slot 1)
+        self.Level = 0 # Player level
+        self.ZoneID = 0 # Player zone
+        self.LastZoneID = 0 # player last zone
+        self.ZoneName = "" # zone name
+        self.SessionID = "" # session id (the one you use to invite friends to your session)
+        self.HarvestedItemsCounter = 0 # amount of items in harvest box
+        self.HarvestBox = [] # each slot in harvest box
+        self.HarvestBoxFertilizers = [] # the 4 fertilizers amount
+        self.PrimaryMantle = 0 # primary mantle player has equipped
+        self.SecondaryMantle = 0 # secondary mantle player has equipped
 
-class Monster:
+class Monster: # Monster class, each monster will initialize one
     def __init__(self):
-        self.Name = "UNKNOWN"
-        self.Id = ""
-        self.TotalHP = 0
-        self.CurrentHP = 0
-        self.isTarget = False
-        self.Address = 0x0
+        self.Name = "UNKNOWN" # Monster Name
+        self.Id = "" # Monster ID
+        self.TotalHP = 0 # Monster total HP
+        self.CurrentHP = 0 # Monster current HP
+        self.isTarget = False # True if it's the player's target, false if not
+        self.Address = 0x0 # Monster address in memory
 
 class Game:
     baseAddress = 0x140000000 # MonsterHunterWorld.exe base address
@@ -106,7 +129,7 @@ class Game:
     ZoneOffset = 0x04852910  # Zone ID offset
     MonsterOffset = 0x48525D0 # monster offset
     SessionOffset = 0x0485A430 # Session id offset
-    
+
     def __init__(self, pid):
         # Scanner stuff
         self.pid = pid
@@ -129,6 +152,7 @@ class Game:
             self.getSessionID()
             self.getFertilizerCount()
             self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
+            self.GetEquippedMantlesIDs()
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
             self.getPlayerZoneID()
@@ -401,3 +425,19 @@ class Game:
                 self.SecondaryMonster.isTarget = False
                 self.ThirtiaryMonster.isTarget = False
                 continue
+
+    def GetEquippedMantlesIDs(self):
+        # Function that gets the current equipped mantles
+        MantleAddress = Game.levelAddress + 0x34 # Mantle address is really close to the level address
+        self.GetPrimaryMantle(MantleAddress)
+        self.GetSecondaryMantle(MantleAddress+0x4) # Secondary mantle is 4 bytes ahead first mantle
+
+    def GetPrimaryMantle(self, address):
+        mantleid = self.MemoryReader.readInteger(address)
+        self.PlayerInfo.PrimaryMantle = mantleid
+        self.Log(f"Primary mantle: {IDS.Mantles.get(mantleid)} id: {mantleid} ({hex(address)})")
+
+    def GetSecondaryMantle(self, address):
+        mantleid = self.MemoryReader.readInteger(address)
+        self.PlayerInfo.SecondaryMantle = mantleid
+        self.Log(f"Secondary mantle: {IDS.Mantles.get(mantleid)} id: {mantleid} ({hex(address)})\n")

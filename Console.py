@@ -606,9 +606,12 @@ class Ui_Console(object):
 
     def updateFertilizerOverlay(self):
         if self.OverlayUI.FertilizerWidgetEnabled and self.MHWPresence.PlayerInfo.ZoneID in self.MHWPresence.NoMonsterZones and len(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers) == 4 and self.MHWPresence.Scanning:
-            self.OverlayUI.showFertilizerWindow()
-            self.OverlayUI.updateFertilizerCounter(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers)
-            self.OverlayUI.updateHarvestedTotal(self.MHWPresence.PlayerInfo.HarvestedItemsCounter)
+            if self.MHWPresence.PlayerInfo.ZoneName == "Main Menu": # hides harvest window in main menu, needs this because Main Menu is a "NoMonsterZone"
+                self.OverlayUI.hideFertilizerWindow()
+            else:
+                self.OverlayUI.showFertilizerWindow()
+                self.OverlayUI.updateFertilizerCounter(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers)
+                self.OverlayUI.updateHarvestedTotal(self.MHWPresence.PlayerInfo.HarvestedItemsCounter)
         else:
             self.OverlayUI.hideFertilizerWindow()
 
@@ -746,7 +749,7 @@ def Main(arg):
     ui.setupUi(Console)
     if arg == "updated":
         ui.JustUpdated = True
-        #GetNewUpdater()
+        GetNewUpdater()
     else:
         ui.JustUpdated = False
     ui.checkIfJustUpdated()
