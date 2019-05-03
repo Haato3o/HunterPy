@@ -10,7 +10,7 @@ You can download the version 2.0.84 [here](https://github.com/Haato3o/HunterPy/r
 The discord integration is enabled by default, you just need to open your game and let HunterPy running in the background, however it can be disabled anytime by opening the `config.json` and setting the `RichPresence` from `true` to `false`.
 
 ## Overlay
-**DISCLAIMER: THE OVERLAY ONLY WORKS WHEN THE GAME IS IN BORDERLESS FULLSCREEN OR WINDOWED!**
+**THE OVERLAY ONLY WORKS WHEN THE GAME IS IN BORDERLESS FULLSCREEN OR WINDOWED!**
 HunterPy has a overlay that can be toggled on/off in the `config.json`. You can also disable any of the widgets in the overlay separately in case you don't like one of them as well as change the widgets position.
 ### Monster health
 Shows monsters name, current health, total health and has a health bar.
