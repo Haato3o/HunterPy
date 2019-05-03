@@ -13,7 +13,8 @@ The discord integration is enabled by default, you just need to open your game a
 
 ## Overlay
 **THE OVERLAY ONLY WORKS WHEN THE GAME IS IN BORDERLESS FULLSCREEN OR WINDOWED!**
-HunterPy has a overlay that can be toggled on/off in the console. You can also disable any of the widgets in the overlay separately in case you don't like one of them as well as change the widgets position.
+
+HunterPy has an overlay that can be toggled on/off in the console. You can also disable any of the widgets in the overlay separately in case you don't like one of them as well as change the widgets position.
 ### Monster health
 Shows monsters name, current health, total health and has a health bar.
 
