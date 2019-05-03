@@ -46,6 +46,11 @@
      <height>80</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
+   </property>
    <property name="acceptDrops">
     <bool>true</bool>
    </property>
@@ -61,7 +66,7 @@ QProgressBar {
 
 QProgressBar::chunk {
 	background-color:  qlineargradient(spread:pad, x1:1, y1:0.665, x2:1, y2:0.239, stop:0 rgba(131, 0, 0, 255), stop:0.522727 rgba(198, 0, 0, 255), stop:1 rgba(194, 0, 0, 255));
-	border-radius: 3px;
+	border-radius: 10px;
 }</string>
    </property>
    <widget class="QProgressBar" name="thirdMonsterHPBar">
@@ -71,8 +76,8 @@ QProgressBar::chunk {
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>60</y>
-      <width>201</width>
+      <y>50</y>
+      <width>211</width>
       <height>6</height>
      </rect>
     </property>
@@ -490,6 +495,11 @@ QProgressBar::chunk {
        </colorrole>
       </disabled>
      </palette>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+     </font>
     </property>
     <property name="autoFillBackground">
      <bool>false</bool>
@@ -517,8 +527,8 @@ QProgressBar::chunk {
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>60</y>
-      <width>201</width>
+      <y>50</y>
+      <width>211</width>
       <height>6</height>
      </rect>
     </property>
@@ -936,6 +946,11 @@ QProgressBar::chunk {
        </colorrole>
       </disabled>
      </palette>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+     </font>
     </property>
     <property name="autoFillBackground">
      <bool>false</bool>
@@ -967,7 +982,7 @@ QProgressBar::chunk {
     </property>
     <property name="font">
      <font>
-      <family>MS Reference Sans Serif</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
      </font>
     </property>
@@ -992,7 +1007,7 @@ QProgressBar::chunk {
     </property>
     <property name="font">
      <font>
-      <family>MS Reference Sans Serif</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
      </font>
     </property>
@@ -1017,15 +1032,17 @@ QProgressBar::chunk {
     </property>
     <property name="font">
      <font>
-      <family>MS Reference Sans Serif</family>
-      <pointsize>12</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>First monster name</string>
+     <string>FIRST MONSTER NAME</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1042,7 +1059,7 @@ QProgressBar::chunk {
     </property>
     <property name="font">
      <font>
-      <family>MS Reference Sans Serif</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
      </font>
     </property>
@@ -1059,23 +1076,25 @@ QProgressBar::chunk {
    <widget class="QLabel" name="secondMonsterName">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>270</x>
       <y>0</y>
-      <width>221</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>MS Reference Sans Serif</family>
-      <pointsize>12</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>Second monster name</string>
+     <string>SECOND MONSTER NAME</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1084,23 +1103,25 @@ QProgressBar::chunk {
    <widget class="QLabel" name="thirdMonsterName">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>530</x>
       <y>0</y>
-      <width>221</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>MS Reference Sans Serif</family>
-      <pointsize>12</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>Third monster name</string>
+     <string>THIRD MONSTER NAME</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1112,9 +1133,9 @@ QProgressBar::chunk {
     </property>
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>201</width>
+      <x>0</x>
+      <y>50</y>
+      <width>211</width>
       <height>6</height>
      </rect>
     </property>
@@ -1532,6 +1553,11 @@ QProgressBar::chunk {
        </colorrole>
       </disabled>
      </palette>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+     </font>
     </property>
     <property name="autoFillBackground">
      <bool>false</bool>
@@ -1564,7 +1590,7 @@ QProgressBar::chunk {
    </property>
    <property name="font">
     <font>
-     <family>Bahnschrift SemiLight Condensed</family>
+     <family>Segoe UI</family>
      <pointsize>10</pointsize>
     </font>
    </property>
@@ -1588,7 +1614,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Yu Gothic UI Semibold</family>
+      <family>Segoe UI</family>
       <pointsize>11</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1612,7 +1638,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Yu Gothic UI Semibold</family>
+      <family>Segoe UI</family>
       <pointsize>11</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1636,7 +1662,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Yu Gothic UI Semibold</family>
+      <family>Segoe UI</family>
       <pointsize>11</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1660,7 +1686,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Yu Gothic UI Semibold</family>
+      <family>Segoe UI</family>
       <pointsize>11</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1681,7 +1707,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Yu Gothic UI Semibold</family>
+      <family>Segoe UI</family>
       <pointsize>11</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1705,7 +1731,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Lato</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1729,7 +1755,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Lato</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1753,7 +1779,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Lato</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1777,7 +1803,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Lato</family>
+      <family>Segoe UI</family>
       <pointsize>10</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1801,7 +1827,7 @@ QLabel {
     </property>
     <property name="font">
      <font>
-      <family>Yu Gothic UI Semibold</family>
+      <family>Segoe UI</family>
       <pointsize>11</pointsize>
       <weight>75</weight>
       <bold>true</bold>
@@ -1815,28 +1841,153 @@ QLabel {
     </property>
    </widget>
   </widget>
-  <widget class="QWidget" name="mantlesWidget" native="true">
+  <widget class="QWidget" name="primaryMantleWidget" native="true">
    <property name="geometry">
     <rect>
-     <x>1150</x>
-     <y>600</y>
+     <x>1170</x>
+     <y>500</y>
      <width>191</width>
-     <height>101</height>
+     <height>31</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QWidget#mantlesWidget {
-	background-color: rgba(0, 0, 0, 0.3)
-}	</string>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
    </property>
-   <widget class="QProgressBar" name="primaryMantleCooldown">
+   <property name="styleSheet">
+    <string notr="true">QWidget#primaryMantleWidget {
+	background-color: rgba(0, 0, 0, 0.3);
+}
+QLabel {
+	color: white;
+}	
+QProgressBar::chunk {
+	background-color: rgb(90, 90, 90) ;
+}
+QProgressBar {
+	color: white;
+	background-color: rgba(0, 0, 0, 0.0);
+	border-radius: 5px;
+}</string>
+   </property>
+   <widget class="QLabel" name="mantleName">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>20</y>
+      <y>-8</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="text">
+     <string>Rocksteady Mantle </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="primaryMantleTimer">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
       <width>31</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="textVisible">
+     <bool>true</bool>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+    <property name="invertedAppearance">
+     <bool>false</bool>
+    </property>
+    <property name="textDirection">
+     <enum>QProgressBar::TopToBottom</enum>
+    </property>
+    <property name="format">
+     <string/>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="secondaryMantleWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>1170</x>
+     <y>540</y>
+     <width>191</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget#secondaryMantleWidget {
+	background-color: rgba(0, 0, 0, 0.3);
+}
+QLabel {
+	color: white;
+}	
+QProgressBar::chunk {
+	background-color: rgb(185, 185, 185) ;
+}
+QProgressBar {
+	color: white;
+	background-color: rgba(0, 0, 0, 0.0);
+	border-radius: 5px;
+}</string>
+   </property>
+   <widget class="QProgressBar" name="secondaryMantleTimer">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="minimum">
      <number>0</number>
@@ -1844,8 +1995,11 @@ QLabel {
     <property name="value">
      <number>99</number>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
     <property name="textVisible">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -1857,7 +2011,37 @@ QLabel {
      <enum>QProgressBar::TopToBottom</enum>
     </property>
     <property name="format">
-     <string>%p%</string>
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="secondaryMantleName">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>-8</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="text">
+     <string>Temporal Mantle</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

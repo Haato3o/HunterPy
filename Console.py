@@ -17,7 +17,7 @@ import mainResources_rc
 import json
 from Config import *
 
-Version = "2.0.83"
+Version = "2.0.84"
 
 class Ui_Console(object):
     def __init__(self):
@@ -554,9 +554,13 @@ class Ui_Console(object):
         self.MHWPresence.Enabled = self.Config["RichPresence"]["Enabled"]
         self.OverlayUI.Enabled = self.Config["Overlay"]["Enabled"]
         self.OverlayUI.FertilizerWidgetEnabled = self.Config["Overlay"]["HarvestBoxComponent"]["Enabled"]
+        self.OverlayUI.PrimaryMantleEnabled = self.Config["Overlay"]["PrimaryMantle"]["Enabled"]
+        self.OverlayUI.SecondaryMantleEnabled = self.Config["Overlay"]["SecondaryMantle"]["Enabled"]
         #Get Position of overlay widgets
         self.OverlayUI.monsterWidgetPosition = self.Config["Overlay"]["MonstersComponent"]["Position"]
         self.OverlayUI.fertWidgetPosition = self.Config["Overlay"]["HarvestBoxComponent"]["Position"]
+        self.OverlayUI.PrimaryMantlePosition = self.Config["Overlay"]["PrimaryMantle"]["Position"]
+        self.OverlayUI.SecondaryMantlePosition = self.Config["Overlay"]["SecondaryMantle"]["Position"]
 
     def showMainWindow(self, event):
         if event == QtWidgets.QSystemTrayIcon.Trigger:
@@ -602,7 +606,14 @@ class Ui_Console(object):
             self.secondMonsterInfo()
             self.thirdMonsterInfo()
             self.updateFertilizerOverlay()
+            self.updatePrimaryMantle()
         QtCore.QTimer.singleShot(1, self.UpdateOverlay)
+
+    def updatePrimaryMantle(self):
+        if self.OverlayUI.Enabled:
+            pass
+        else:
+            self.OverlayUI.hidePrimaryMantle()
 
     def updateFertilizerOverlay(self):
         if self.OverlayUI.FertilizerWidgetEnabled and self.MHWPresence.PlayerInfo.ZoneID in self.MHWPresence.NoMonsterZones and len(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers) == 4 and self.MHWPresence.Scanning:

@@ -5,3 +5,9 @@ output/*
 __pycache__/*
 
 config.json
+*.ui
+*.png
+changelog.log
+consoleNew.py
+overlayNew.py
+*.qrc

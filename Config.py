@@ -15,6 +15,14 @@ class Config:
             "HarvestBoxComponent" : {
                 "Enabled" : True,
                 "Position" : [1160, 30]
+            },
+            "PrimaryMantle" : {
+                "Enabled" : True,
+                "Position" : [1170, 500]
+            },
+            "SecondaryMantle" : {
+                "Enabled" : True,
+                "Position" : [1170, 540]
             }
         },
         "RichPresence" : {

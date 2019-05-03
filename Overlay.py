@@ -7,9 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import json
-import ctypes
-import os
+from qroundprogressbar import QRoundProgressBar
 
 class Ui_OverlayWindow(object):
         def __init__(self):
@@ -19,6 +17,10 @@ class Ui_OverlayWindow(object):
                 self.monsterWidgetPosition = []
                 self.FertilizerWidgetEnabled = True
                 self.fertWidgetPosition = []
+                self.PrimaryMantleEnabled = True
+                self.PrimaryMantlePosition = []
+                self.SecondaryMantleEnabled = True
+                self.SecondaryMantlePosition = []
 
         def setupUi(self, OverlayWindow):
                 OverlayWindow.setObjectName("OverlayWindow")
@@ -32,8 +34,6 @@ class Ui_OverlayWindow(object):
                 OverlayWindow.setAttribute(QtCore.Qt.WA_TranslucentBackground)
                 ##
                 OverlayWindow.setAutoFillBackground(False)
-                OverlayWindow.setStyleSheet("QLabel {\n"
-                "    color: white;}\nQProgressBar {\n background-color: rgba(75, 75, 75, 0.5);\nborder-radius: 2px;\n}\nQProgressBar::chunk {\nborder-radius: 2px;\n}")
                 self.monsterHealth = QtWidgets.QWidget(OverlayWindow)
                 self.monsterHealth.setGeometry(QtCore.QRect(110, 20, 741, 80))
                 self.monsterHealth.setAcceptDrops(True)
@@ -42,15 +42,15 @@ class Ui_OverlayWindow(object):
                 self.firstMonsterName = QtWidgets.QLabel(self.monsterHealth)
                 self.firstMonsterName.setGeometry(QtCore.QRect(0, 0, 211, 31))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
-                font.setPointSize(12)
+                font.setFamily("Segoe UI")
+                font.setPointSize(10)
                 font.setBold(True)
                 self.firstMonsterName.setFont(font)
                 self.firstMonsterName.setAlignment(QtCore.Qt.AlignCenter)
                 self.firstMonsterName.setObjectName("firstMonsterName")
                 self.firstMonsterHPBar = QtWidgets.QProgressBar(self.monsterHealth)
                 self.firstMonsterHPBar.setEnabled(True)
-                self.firstMonsterHPBar.setGeometry(QtCore.QRect(10, 60, 201, 6))
+                self.firstMonsterHPBar.setGeometry(QtCore.QRect(0, 50, 211, 6))
                 palette = QtGui.QPalette()
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
@@ -187,12 +187,24 @@ class Ui_OverlayWindow(object):
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
                 palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ToolTipText, brush)
+                monsterWidgetStyle = '''
+                QLabel {
+                        color: white;
+                }
+
+                QProgressBar {
+                        background-color: rgba(75, 75, 75, 0.2);
+                        border-radius: 3px;
+                }
+
+                QProgressBar::chunk {
+                        background-color:  qlineargradient(spread:pad, x1:1, y1:0.665, x2:1, y2:0.239, stop:0 rgba(131, 0, 0, 255), stop:0.522727 rgba(198, 0, 0, 255), stop:1 rgba(194, 0, 0, 255));
+                        border-radius: 3px;
+                }
+                '''
+                self.monsterHealth.setStyleSheet(monsterWidgetStyle)
                 self.firstMonsterHPBar.setPalette(palette)
                 self.firstMonsterHPBar.setAutoFillBackground(False)
-                self.firstMonsterHPBar.setStyleSheet("QProgressBar::chunk {\n"
-                "    background-color: qlineargradient(spread:pad, x1:1, y1:0.665, x2:1, y2:0.239, stop:0 rgba(131, 0, 0, 255), stop:0.522727 rgba(198, 0, 0, 255), stop:1 rgba(194, 0, 0, 255))\n"
-                "}\n"
-                "")
                 self.firstMonsterHPBar.setMaximum(8888)
                 self.firstMonsterHPBar.setProperty("value", 1000)
                 self.firstMonsterHPBar.setTextVisible(False)
@@ -201,7 +213,7 @@ class Ui_OverlayWindow(object):
                 self.firstMonsterHPText = QtWidgets.QLabel(self.monsterHealth)
                 self.firstMonsterHPText.setGeometry(QtCore.QRect(0, 30, 211, 20))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(10)
                 self.firstMonsterHPText.setFont(font)
                 self.firstMonsterHPText.setAlignment(QtCore.Qt.AlignCenter)
@@ -209,8 +221,8 @@ class Ui_OverlayWindow(object):
                 self.secondMonsterName = QtWidgets.QLabel(self.monsterHealth)
                 self.secondMonsterName.setGeometry(QtCore.QRect(260, 0, 221, 31))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
-                font.setPointSize(12)
+                font.setFamily("Segoe UI")
+                font.setPointSize(11)
                 font.setBold(True)
                 self.secondMonsterName.setFont(font)
                 self.secondMonsterName.setAlignment(QtCore.Qt.AlignCenter)
@@ -218,14 +230,14 @@ class Ui_OverlayWindow(object):
                 self.secondMonsterHPText = QtWidgets.QLabel(self.monsterHealth)
                 self.secondMonsterHPText.setGeometry(QtCore.QRect(270, 30, 211, 20))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(10)
                 self.secondMonsterHPText.setFont(font)
                 self.secondMonsterHPText.setAlignment(QtCore.Qt.AlignCenter)
                 self.secondMonsterHPText.setObjectName("secondMonsterHPText")
                 self.secondMonsterHPBar = QtWidgets.QProgressBar(self.monsterHealth)
                 self.secondMonsterHPBar.setEnabled(True)
-                self.secondMonsterHPBar.setGeometry(QtCore.QRect(270, 60, 201, 6))
+                self.secondMonsterHPBar.setGeometry(QtCore.QRect(270, 50, 211, 6))
                 palette = QtGui.QPalette()
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
@@ -364,10 +376,6 @@ class Ui_OverlayWindow(object):
                 palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ToolTipText, brush)
                 self.secondMonsterHPBar.setPalette(palette)
                 self.secondMonsterHPBar.setAutoFillBackground(False)
-                self.secondMonsterHPBar.setStyleSheet("QProgressBar::chunk {\n"
-                "    background-color: qlineargradient(spread:pad, x1:1, y1:0.665, x2:1, y2:0.239, stop:0 rgba(131, 0, 0, 255), stop:0.522727 rgba(198, 0, 0, 255), stop:1 rgba(194, 0, 0, 255))\n"
-                "}\n"
-                "")
                 self.secondMonsterHPBar.setMaximum(6565)
                 self.secondMonsterHPBar.setProperty("value", 6565)
                 self.secondMonsterHPBar.setTextVisible(False)
@@ -375,7 +383,7 @@ class Ui_OverlayWindow(object):
                 self.secondMonsterHPBar.setObjectName("secondMonsterHPBar")
                 self.thirdMonsterHPBar = QtWidgets.QProgressBar(self.monsterHealth)
                 self.thirdMonsterHPBar.setEnabled(True)
-                self.thirdMonsterHPBar.setGeometry(QtCore.QRect(530, 60, 201, 6))
+                self.thirdMonsterHPBar.setGeometry(QtCore.QRect(530, 50, 211, 6))
                 palette = QtGui.QPalette()
                 brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
                 brush.setStyle(QtCore.Qt.SolidPattern)
@@ -514,10 +522,6 @@ class Ui_OverlayWindow(object):
                 palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ToolTipText, brush)
                 self.thirdMonsterHPBar.setPalette(palette)
                 self.thirdMonsterHPBar.setAutoFillBackground(False)
-                self.thirdMonsterHPBar.setStyleSheet("QProgressBar::chunk {\n"
-                "    background-color: qlineargradient(spread:pad, x1:1, y1:0.665, x2:1, y2:0.239, stop:0 rgba(131, 0, 0, 255), stop:0.522727 rgba(198, 0, 0, 255), stop:1 rgba(194, 0, 0, 255))\n"
-                "}\n"
-                "")
                 self.thirdMonsterHPBar.setMaximum(4578)
                 self.thirdMonsterHPBar.setProperty("value", 4578)
                 self.thirdMonsterHPBar.setTextVisible(False)
@@ -526,8 +530,8 @@ class Ui_OverlayWindow(object):
                 self.thirdMonsterName = QtWidgets.QLabel(self.monsterHealth)
                 self.thirdMonsterName.setGeometry(QtCore.QRect(520, 0, 221, 31))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
-                font.setPointSize(12)
+                font.setFamily("Segoe UI")
+                font.setPointSize(11)
                 font.setBold(True)
                 self.thirdMonsterName.setFont(font)
                 self.thirdMonsterName.setAlignment(QtCore.Qt.AlignCenter)
@@ -535,7 +539,7 @@ class Ui_OverlayWindow(object):
                 self.thirdMonsterHPText = QtWidgets.QLabel(self.monsterHealth)
                 self.thirdMonsterHPText.setGeometry(QtCore.QRect(530, 30, 211, 20))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(10)
                 self.thirdMonsterHPText.setFont(font)
                 self.thirdMonsterHPText.setAlignment(QtCore.Qt.AlignCenter)
@@ -544,41 +548,42 @@ class Ui_OverlayWindow(object):
                 self.fertilizerWidget.setGeometry(QtCore.QRect(1160, 30, 250, 241))
                 self.fertilizerWidget.setStyleSheet("QWidget#fertilizerWidget {\n"
                 "    background-color: rgba(0,0,0,0.3);\n"
-                "    border: 1px solid white;\n"
+                "    border: 1px solid rgba(255, 255, 255, 0.5);}\n"
+                "    QLabel { color: white;\n"
                 "}")
                 self.fertilizerWidget.setObjectName("fertilizerWidget")
                 self.firstFertilizerText = QtWidgets.QLabel(self.fertilizerWidget)
                 self.firstFertilizerText.setGeometry(QtCore.QRect(10, 40, 191, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.firstFertilizerText.setFont(font)
                 self.firstFertilizerText.setObjectName("firstFertilizerText")
                 self.secondFertilizerText = QtWidgets.QLabel(self.fertilizerWidget)
                 self.secondFertilizerText.setGeometry(QtCore.QRect(10, 80, 191, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.secondFertilizerText.setFont(font)
                 self.secondFertilizerText.setObjectName("secondFertilizerText")
                 self.thirdFertilizerText = QtWidgets.QLabel(self.fertilizerWidget)
                 self.thirdFertilizerText.setGeometry(QtCore.QRect(10, 120, 191, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.thirdFertilizerText.setFont(font)
                 self.thirdFertilizerText.setObjectName("thirdFertilizerText")
                 self.fourthFertilizerText = QtWidgets.QLabel(self.fertilizerWidget)
                 self.fourthFertilizerText.setGeometry(QtCore.QRect(10, 160, 191, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.fourthFertilizerText.setFont(font)
                 self.fourthFertilizerText.setObjectName("fourthFertilizerText")
                 self.totalItemsinbox = QtWidgets.QLabel(self.fertilizerWidget)
                 self.totalItemsinbox.setGeometry(QtCore.QRect(0, 200, 251, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.totalItemsinbox.setFont(font)
                 self.totalItemsinbox.setAlignment(QtCore.Qt.AlignCenter)
@@ -586,7 +591,7 @@ class Ui_OverlayWindow(object):
                 self.firstFertilizerCounter = QtWidgets.QLabel(self.fertilizerWidget)
                 self.firstFertilizerCounter.setGeometry(QtCore.QRect(200, 40, 41, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.firstFertilizerCounter.setFont(font)
                 self.firstFertilizerCounter.setAlignment(QtCore.Qt.AlignCenter)
@@ -594,7 +599,7 @@ class Ui_OverlayWindow(object):
                 self.secondFertilizerCounter = QtWidgets.QLabel(self.fertilizerWidget)
                 self.secondFertilizerCounter.setGeometry(QtCore.QRect(200, 80, 41, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.secondFertilizerCounter.setFont(font)
                 self.secondFertilizerCounter.setAlignment(QtCore.Qt.AlignCenter)
@@ -602,7 +607,7 @@ class Ui_OverlayWindow(object):
                 self.thirdFertilizerCounter = QtWidgets.QLabel(self.fertilizerWidget)
                 self.thirdFertilizerCounter.setGeometry(QtCore.QRect(200, 120, 41, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.thirdFertilizerCounter.setFont(font)
                 self.thirdFertilizerCounter.setAlignment(QtCore.Qt.AlignCenter)
@@ -610,7 +615,7 @@ class Ui_OverlayWindow(object):
                 self.fourthFertilizerCounter = QtWidgets.QLabel(self.fertilizerWidget)
                 self.fourthFertilizerCounter.setGeometry(QtCore.QRect(200, 160, 41, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(11)
                 self.fourthFertilizerCounter.setFont(font)
                 self.fourthFertilizerCounter.setAlignment(QtCore.Qt.AlignCenter)
@@ -618,20 +623,119 @@ class Ui_OverlayWindow(object):
                 self.fertilizerTitle = QtWidgets.QLabel(self.fertilizerWidget)
                 self.fertilizerTitle.setGeometry(QtCore.QRect(0, 0, 251, 41))
                 font = QtGui.QFont()
-                font.setFamily("Yu Gothic UI")
+                font.setFamily("Segoe UI")
                 font.setPointSize(13)
                 font.setBold(True)
                 self.fertilizerTitle.setFont(font)
                 self.fertilizerTitle.setAlignment(QtCore.Qt.AlignCenter)
                 self.fertilizerTitle.setObjectName("fertilizerTitle")
+                self.primaryMantleWidget = QtWidgets.QWidget(OverlayWindow)
+                self.primaryMantleWidget.setGeometry(QtCore.QRect(1170, 500, 191, 31))
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                self.primaryMantleWidget.setFont(font)
+                primaryMantleStyle = '''
+                QWidget#primaryMantleWidget {
+                        background-color: rgba(0, 0, 0, 0.3);
+                }
+                QLabel {
+                        color: white;
+                }	
+                QProgressBar::chunk {
+                        background-color: rgb(90, 90, 90) ;
+                }
+                QProgressBar {
+                        color: white;
+                        background-color: rgba(0, 0, 0, 0.0);
+                        border-radius: 5px;
+                }
+                '''
+                self.primaryMantleWidget.setStyleSheet(primaryMantleStyle)
+                self.primaryMantleWidget.setObjectName("primaryMantleWidget")
+                self.primaryMantleTimer = QtWidgets.QProgressBar(self.primaryMantleWidget)
+                self.primaryMantleTimer.setGeometry(QtCore.QRect(0, 0, 31, 31))
+                self.primaryMantleTimer.setMinimum(0)
+                self.primaryMantleTimer.setProperty("value", 50)
+                self.primaryMantleTimer.setAlignment(QtCore.Qt.AlignCenter)
+                self.primaryMantleTimer.setTextVisible(True)
+                self.primaryMantleTimer.setOrientation(QtCore.Qt.Vertical)
+                self.primaryMantleTimer.setInvertedAppearance(False)
+                self.primaryMantleTimer.setTextDirection(QtWidgets.QProgressBar.TopToBottom)
+                self.primaryMantleTimer.setFormat("")
+                self.primaryMantleTimer.setObjectName("primaryMantleTimer")
+                self.mantleName = QtWidgets.QLabel(self.primaryMantleWidget)
+                self.mantleName.setGeometry(QtCore.QRect(30, -8, 161, 41))
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                font.setPointSize(10)
+                font.setBold(True)
+                font.setWeight(75)
+                self.mantleName.setFont(font)
+                self.mantleName.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.mantleName.setFrameShadow(QtWidgets.QFrame.Plain)
+                self.mantleName.setAlignment(QtCore.Qt.AlignCenter)
+                self.mantleName.setObjectName("mantleName")
+                self.secondaryMantleWidget = QtWidgets.QWidget(OverlayWindow)
+                self.secondaryMantleWidget.setGeometry(QtCore.QRect(1170, 540, 191, 31))
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                self.secondaryMantleWidget.setFont(font)
+                secondaryMantleStyle = '''
+                QWidget#secondaryMantleWidget {
+                        background-color: rgba(0, 0, 0, 0.3);
+                }
+                QLabel {
+                        color: white;
+                }	
+                QProgressBar::chunk {
+                        background-color: rgb(185, 185, 185) ;
+                }
+                QProgressBar {
+                        color: white;
+                        background-color: rgba(0, 0, 0, 0.0);
+                        border-radius: 5px;
+                }
+                '''
+                self.secondaryMantleWidget.setStyleSheet(secondaryMantleStyle)
+                self.secondaryMantleWidget.setObjectName("secondaryMantleWidget")
+                self.secondaryMantleTimer = QtWidgets.QProgressBar(self.secondaryMantleWidget)
+                self.secondaryMantleTimer.setGeometry(QtCore.QRect(0, 0, 31, 31))
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                font.setBold(True)
+                font.setWeight(75)
+                self.secondaryMantleTimer.setFont(font)
+                self.secondaryMantleTimer.setMinimum(0)
+                self.secondaryMantleTimer.setProperty("value", 99)
+                self.secondaryMantleTimer.setAlignment(QtCore.Qt.AlignCenter)
+                self.secondaryMantleTimer.setTextVisible(True)
+                self.secondaryMantleTimer.setOrientation(QtCore.Qt.Vertical)
+                self.secondaryMantleTimer.setInvertedAppearance(False)
+                self.secondaryMantleTimer.setTextDirection(QtWidgets.QProgressBar.TopToBottom)
+                self.secondaryMantleTimer.setFormat("")
+                self.secondaryMantleTimer.setObjectName("secondaryMantleTimer")
+                self.secondaryMantleName = QtWidgets.QLabel(self.secondaryMantleWidget)
+                self.secondaryMantleName.setGeometry(QtCore.QRect(30, -8, 161, 41))
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                font.setPointSize(10)
+                font.setBold(True)
+                font.setWeight(75)
+                self.secondaryMantleName.setFont(font)
+                self.secondaryMantleName.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.secondaryMantleName.setFrameShadow(QtWidgets.QFrame.Plain)
+                self.secondaryMantleName.setAlignment(QtCore.Qt.AlignCenter)
+                self.secondaryMantleName.setObjectName("secondaryMantleName")
                 self.retranslateUi(OverlayWindow)
                 QtCore.QMetaObject.connectSlotsByName(OverlayWindow)
                 # Change monster stuff position
                 QtCore.QTimer.singleShot(1, self.MoveOverlay)
-                #### HIDE ELEMENTS #####
+                #### HIDE WIDGETS #####
                 self.hideMonstersWidget()
                 self.hideFertilizerWindow()
-        
+                self.hidePrimaryMantle()
+                self.hideSecondaryMantle()
+
         def showMonstersWidget(self):
                 self.monsterHealth.show()
 
@@ -692,21 +796,29 @@ class Ui_OverlayWindow(object):
         def retranslateUi(self, OverlayWindow):
                 _translate = QtCore.QCoreApplication.translate
                 OverlayWindow.setWindowTitle(_translate("OverlayWindow", "Overlay"))
-                self.firstMonsterName.setText(_translate("OverlayWindow", "First monster name"))
+                self.firstMonsterName.setText(_translate("OverlayWindow", "FIRST MONSTER NAME"))
                 self.firstMonsterHPText.setText(_translate("OverlayWindow", "1000/8888 (14%)"))
-                self.secondMonsterName.setText(_translate("OverlayWindow", "Second monster name"))
+                self.secondMonsterName.setText(_translate("OverlayWindow", "SECOND MONSTER NAME"))
                 self.secondMonsterHPText.setText(_translate("OverlayWindow", "6565/6565 (100%)"))
-                self.thirdMonsterName.setText(_translate("OverlayWindow", "Third monster name"))
+                self.thirdMonsterName.setText(_translate("OverlayWindow", "THIRD MONSTER NAME"))
                 self.thirdMonsterHPText.setText(_translate("OverlayWindow", "4578/4578 (100%)"))
                 self.fertilizerTitle.setText("HARVEST BOX")
+                self.mantleName.setText("Rocksteady Mantle")
+                self.secondaryMantleName.setText("Temporal Mantle")
 
         def MoveOverlay(self):
                 monsterX = self.monsterWidgetPosition[0]
                 monsterY = self.monsterWidgetPosition[1]
                 fertilizerX = self.fertWidgetPosition[0]
                 fertilizerY = self.fertWidgetPosition[1]
+                mantle1X = self.PrimaryMantlePosition[0]
+                mantle1Y = self.PrimaryMantlePosition[1]
+                mantle2X = self.SecondaryMantlePosition[0]
+                mantle2Y = self.SecondaryMantlePosition[1]
                 self.monsterHealth.move(monsterX, monsterY)
                 self.fertilizerWidget.move(fertilizerX, fertilizerY)
+                self.primaryMantleWidget.move(mantle1X, mantle1Y)
+                self.secondaryMantleWidget.move(mantle2X, mantle2Y)
                 QtCore.QTimer.singleShot(1, self.MoveOverlay)
         
         def updateFertilizerCounter(self, list):
@@ -727,3 +839,15 @@ class Ui_OverlayWindow(object):
 
         def hideFertilizerWindow(self):
                 self.fertilizerWidget.hide()
+
+        def showPrimaryMantle(self):
+                self.primaryMantleWidget.show()
+
+        def hidePrimaryMantle(self):
+                self.primaryMantleWidget.hide()
+
+        def showsecondaryMantle(self):
+                self.secondaryMantleWidget.show()
+
+        def hideSecondaryMantle(self):
+                self.secondaryMantleWidget.hide()

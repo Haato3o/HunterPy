@@ -129,6 +129,7 @@ class Game:
     ZoneOffset = 0x04852910  # Zone ID offset
     MonsterOffset = 0x48525D0 # monster offset
     SessionOffset = 0x0485A430 # Session id offset
+    EquipmentOffset = 0x03AC2958 # Equipment container offset
 
     def __init__(self, pid):
         # Scanner stuff
@@ -152,6 +153,7 @@ class Game:
             self.getSessionID()
             self.getFertilizerCount()
             self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
+            self.GetEquipmentAddress()
             self.GetEquippedMantlesIDs()
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
@@ -441,3 +443,9 @@ class Game:
         mantleid = self.MemoryReader.readInteger(address)
         self.PlayerInfo.SecondaryMantle = mantleid
         self.Log(f"Secondary mantle: {IDS.Mantles.get(mantleid)} id: {mantleid} ({hex(address)})\n")
+
+    def GetEquipmentAddress(self):
+        Address = Game.baseAddress + Game.EquipmentOffset
+        offsets = [0xA0, 0x70, 0x1C0, 0xB0]
+        EquipmentAddress = self.MemoryReader.GetMultilevelPtr(Address, offsets)
+        self.Log(f"Equipment address: {hex(EquipmentAddress)}")

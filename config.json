@@ -18,6 +18,20 @@
                 1110,
                 30
             ]
+        },
+        "PrimaryMantle": {
+            "Enabled": true,
+            "Position": [
+                1170,
+                500
+            ]
+        },
+        "SecondaryMantle": {
+            "Enabled": true,
+            "Position": [
+                1170,
+                540
+            ]
         }
     },
     "RichPresence": {
