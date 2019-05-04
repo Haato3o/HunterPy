@@ -7,7 +7,31 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from qroundprogressbar import QRoundProgressBar
+import mainResources_rc
+
+class Styles:
+        Mantles = {
+                0 : "#00580c",
+                1 : "#ffd900",
+                2 : "#00aa41",
+                3 : "#8d8d8d",
+                4 : "#a0fff2",
+                5 : "#42faad",
+                6 : "#e0175a",
+                7 : "#17cfe0",
+                8 : "#e4e4e4",
+                9 : "#a0fff2",
+                10 : "#c2c2c2",
+                11 : "#5448f0", 
+                12 : "#487af0",
+                13 : "#e4e4e4",
+                14 : "#e0175a",
+                15 : "#a17bfb",
+                16 : "#e4e4e4",
+                17 : "#e0175a",
+                18 : "#ffd900",
+                19 : "#e4e4e4"
+        }
 
 class Ui_OverlayWindow(object):
         def __init__(self):
@@ -43,7 +67,7 @@ class Ui_OverlayWindow(object):
                 self.firstMonsterName.setGeometry(QtCore.QRect(0, 0, 211, 31))
                 font = QtGui.QFont()
                 font.setFamily("Segoe UI")
-                font.setPointSize(10)
+                font.setPointSize(11)
                 font.setBold(True)
                 self.firstMonsterName.setFont(font)
                 self.firstMonsterName.setAlignment(QtCore.Qt.AlignCenter)
@@ -641,9 +665,6 @@ class Ui_OverlayWindow(object):
                 QLabel {
                         color: white;
                 }	
-                QProgressBar::chunk {
-                        background-color: rgb(90, 90, 90) ;
-                }
                 QProgressBar {
                         color: white;
                         background-color: rgba(0, 0, 0, 0.0);
@@ -657,7 +678,7 @@ class Ui_OverlayWindow(object):
                 self.primaryMantleTimer.setMinimum(0)
                 self.primaryMantleTimer.setProperty("value", 50)
                 self.primaryMantleTimer.setAlignment(QtCore.Qt.AlignCenter)
-                self.primaryMantleTimer.setTextVisible(True)
+                self.primaryMantleTimer.setTextVisible(False)
                 self.primaryMantleTimer.setOrientation(QtCore.Qt.Vertical)
                 self.primaryMantleTimer.setInvertedAppearance(False)
                 self.primaryMantleTimer.setTextDirection(QtWidgets.QProgressBar.TopToBottom)
@@ -675,6 +696,12 @@ class Ui_OverlayWindow(object):
                 self.mantleName.setFrameShadow(QtWidgets.QFrame.Plain)
                 self.mantleName.setAlignment(QtCore.Qt.AlignCenter)
                 self.mantleName.setObjectName("mantleName")
+                self.primaryMantleIcon = QtWidgets.QLabel(self.primaryMantleWidget)
+                self.primaryMantleIcon.setGeometry(QtCore.QRect(0, 0, 31, 31))
+                font = QtGui.QFont()
+                font.setStyleStrategy(QtGui.QFont.PreferAntialias)
+                self.primaryMantleIcon.setFont(font)
+                self.primaryMantleIcon.setObjectName("primaryMantleIcon")
                 self.secondaryMantleWidget = QtWidgets.QWidget(OverlayWindow)
                 self.secondaryMantleWidget.setGeometry(QtCore.QRect(1170, 540, 191, 31))
                 font = QtGui.QFont()
@@ -686,9 +713,6 @@ class Ui_OverlayWindow(object):
                 }
                 QLabel {
                         color: white;
-                }	
-                QProgressBar::chunk {
-                        background-color: rgb(185, 185, 185) ;
                 }
                 QProgressBar {
                         color: white;
@@ -708,7 +732,7 @@ class Ui_OverlayWindow(object):
                 self.secondaryMantleTimer.setMinimum(0)
                 self.secondaryMantleTimer.setProperty("value", 99)
                 self.secondaryMantleTimer.setAlignment(QtCore.Qt.AlignCenter)
-                self.secondaryMantleTimer.setTextVisible(True)
+                self.secondaryMantleTimer.setTextVisible(False)
                 self.secondaryMantleTimer.setOrientation(QtCore.Qt.Vertical)
                 self.secondaryMantleTimer.setInvertedAppearance(False)
                 self.secondaryMantleTimer.setTextDirection(QtWidgets.QProgressBar.TopToBottom)
@@ -726,6 +750,9 @@ class Ui_OverlayWindow(object):
                 self.secondaryMantleName.setFrameShadow(QtWidgets.QFrame.Plain)
                 self.secondaryMantleName.setAlignment(QtCore.Qt.AlignCenter)
                 self.secondaryMantleName.setObjectName("secondaryMantleName")
+                self.secondaryMantleIcon = QtWidgets.QLabel(self.secondaryMantleWidget)
+                self.secondaryMantleIcon.setGeometry(QtCore.QRect(0, 0, 31, 31))
+                self.secondaryMantleIcon.setObjectName("secondaryMantleIcon")
                 self.retranslateUi(OverlayWindow)
                 QtCore.QMetaObject.connectSlotsByName(OverlayWindow)
                 # Change monster stuff position
@@ -733,8 +760,8 @@ class Ui_OverlayWindow(object):
                 #### HIDE WIDGETS #####
                 self.hideMonstersWidget()
                 self.hideFertilizerWindow()
-                self.hidePrimaryMantle()
-                self.hideSecondaryMantle()
+                #self.hidePrimaryMantle()
+                #self.hideSecondaryMantle()
 
         def showMonstersWidget(self):
                 self.monsterHealth.show()
@@ -803,6 +830,8 @@ class Ui_OverlayWindow(object):
                 self.thirdMonsterName.setText(_translate("OverlayWindow", "THIRD MONSTER NAME"))
                 self.thirdMonsterHPText.setText(_translate("OverlayWindow", "4578/4578 (100%)"))
                 self.fertilizerTitle.setText("HARVEST BOX")
+                self.primaryMantleIcon.setText(_translate("OverlayWindow", "<html><head/><body><p><img src=\":/Overlay/mantleicon.png\"/></p></body></html>"))
+                self.secondaryMantleIcon.setText(_translate("OverlayWindow", "<html><head/><body><p><img src=\":/Overlay/mantleicon.png\"/></p></body></html>"))
                 self.mantleName.setText("Rocksteady Mantle")
                 self.secondaryMantleName.setText("Temporal Mantle")
 
@@ -821,6 +850,18 @@ class Ui_OverlayWindow(object):
                 self.secondaryMantleWidget.move(mantle2X, mantle2Y)
                 QtCore.QTimer.singleShot(1, self.MoveOverlay)
         
+        def setColorDependingOnMantle(self, id, mantle):
+                color = f"background-color: {Styles.Mantles.get(id)}" # get the color of mantle
+                style = '''
+                        QProgressBar::chunk {
+                               %s 
+                        }
+                ''' % color
+                if mantle == "primary":
+                        self.primaryMantleTimer.setStyleSheet(style)
+                elif mantle == "secondary":
+                        self.secondaryMantleTimer.setStyleSheet(style)
+
         def updateFertilizerCounter(self, list):
                 self.firstFertilizerText.setText(list[0]['name'])
                 self.firstFertilizerCounter.setText(f"x{list[0]['count']}")
@@ -846,8 +887,22 @@ class Ui_OverlayWindow(object):
         def hidePrimaryMantle(self):
                 self.primaryMantleWidget.hide()
 
-        def showsecondaryMantle(self):
+        def showSecondaryMantle(self):
                 self.secondaryMantleWidget.show()
 
         def hideSecondaryMantle(self):
                 self.secondaryMantleWidget.hide()
+
+        def updatePrimaryMantleName(self, name, timer):
+                self.mantleName.setText(f"{name} ({int(timer)})")
+
+        def updatePrimaryMantleBar(self, current, maxT):
+                self.primaryMantleTimer.setProperty("value", current)
+                self.primaryMantleTimer.setMaximum(maxT)
+
+        def updateSecondaryMantleName(self, name, timer):
+                self.secondaryMantleName.setText(f"{name} ({int(timer)})")
+        
+        def updateSecondaryMantleBar(self, current, maxT):
+                self.secondaryMantleTimer.setProperty("value", current)
+                self.secondaryMantleTimer.setMaximum(maxT)

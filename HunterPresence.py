@@ -17,6 +17,7 @@ class MHWPresence:
         self.Presence = DiscordPresence()
         self.Target = None
         self.MonstersIds = HunterPy.IDS.Monsters
+        self.MantleIds = HunterPy.IDS.Mantles
         self.Enabled = True
         self.NoMonsterZones = HunterPy.IDS.NoMonstersZones
         self.ElapsedTime = None

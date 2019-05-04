@@ -18,14 +18,14 @@ class IDS: # Countains every id for stuff in the game, might remake it later to 
         9 : "Thunderproof Mantle",
         10 : "Dragonproof Mantle",
         11 : "Cleanser Booster", 
-        14 : "Glider Mantle",
-        15 : "Evasion Mantle",
-        16 : "Impact Mantle",
-        17 : "Apothecary Mantle",
-        18 : "Immunity Mantle",
-        19 : "Affinity Booster",
-        20 : "Bandit Mantle",
-        29 : "Assassin's Hood Mantle"
+        12 : "Glider Mantle",
+        13 : "Evasion Mantle",
+        14 : "Impact Mantle",
+        15 : "Apothecary Mantle",
+        16 : "Immunity Mantle",
+        17 : "Affinity Booster",
+        18 : "Bandit Mantle",
+        19 : "Assassin's Hood"
     }
     Fertilizers = {
         8 : "Growth Up (L)",
@@ -111,7 +111,9 @@ class Player: # player class
         self.HarvestBox = [] # each slot in harvest box
         self.HarvestBoxFertilizers = [] # the 4 fertilizers amount
         self.PrimaryMantle = 0 # primary mantle player has equipped
+        self.PrimaryMantleInfo = [0.0, 0.0, 0.0, 0.0] # first number is fixed cooldown, 2nd is dynamic cooldown, 3rd is fixed timer, 4th is dynamic timer
         self.SecondaryMantle = 0 # secondary mantle player has equipped
+        self.SecondaryMantleInfo = [0.0, 0.0, 0.0, 0.0] # first number is fixed cooldown, 2nd is dynamic cooldown, 3rd is fixed timer, 4th is dynamic timer
 
 class Monster: # Monster class, each monster will initialize one
     def __init__(self):
@@ -130,6 +132,10 @@ class Game:
     MonsterOffset = 0x48525D0 # monster offset
     SessionOffset = 0x0485A430 # Session id offset
     EquipmentOffset = 0x03AC2958 # Equipment container offset
+    cooldownFixed = 0x9BC
+    cooldownDynamic = 0x96C
+    timerFixed = 0xAAC
+    timerDynamic = 0xA5C
 
     def __init__(self, pid):
         # Scanner stuff
@@ -142,6 +148,7 @@ class Game:
         self.PrimaryMonster = Monster()
         self.SecondaryMonster = Monster()
         self.ThirtiaryMonster = Monster()
+        self.EquipmentAddress = None
         self.Logger = []
     
     def scanUntilDone(self):
@@ -155,6 +162,7 @@ class Game:
             self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
             self.GetEquipmentAddress()
             self.GetEquippedMantlesIDs()
+            self.getMantlesTimer()
             self.GetAllMonstersAddress()
             self.GetAllMonstersInfo()
             self.getPlayerZoneID()
@@ -447,5 +455,29 @@ class Game:
     def GetEquipmentAddress(self):
         Address = Game.baseAddress + Game.EquipmentOffset
         offsets = [0xA0, 0x70, 0x1C0, 0xB0]
-        EquipmentAddress = self.MemoryReader.GetMultilevelPtr(Address, offsets)
-        self.Log(f"Equipment address: {hex(EquipmentAddress)}")
+        self.EquipmentAddress = self.MemoryReader.GetMultilevelPtr(Address, offsets)
+        self.Log(f"Equipment address: {hex(self.EquipmentAddress)}")
+    
+    def getMantlesTimer(self):
+        self.getPrimaryMantleTimer()
+        self.getSecondaryMantleTimer()
+
+    def getPrimaryMantleTimer(self):
+        primaryMantleTimerFixed = (self.PlayerInfo.PrimaryMantle * 4) + Game.timerFixed # This is the offset for the fixed timer
+        primaryMantleTimer = (self.PlayerInfo.PrimaryMantle * 4) + Game.timerDynamic # This is the offset for the actual mantle timer
+        primaryMantleCdFixed = (self.PlayerInfo.PrimaryMantle * 4) + Game.cooldownFixed # This is the offset for the fixed cooldown
+        primaryMantleCd = (self.PlayerInfo.PrimaryMantle * 4) + Game.cooldownDynamic # this is the offset for the actual cooldown
+        self.PlayerInfo.PrimaryMantleInfo[0] = self.MemoryReader.readFloat(self.EquipmentAddress + primaryMantleCdFixed)
+        self.PlayerInfo.PrimaryMantleInfo[1] = self.MemoryReader.readFloat(self.EquipmentAddress + primaryMantleCd)
+        self.PlayerInfo.PrimaryMantleInfo[2] = self.MemoryReader.readFloat(self.EquipmentAddress + primaryMantleTimerFixed)
+        self.PlayerInfo.PrimaryMantleInfo[3] = self.MemoryReader.readFloat(self.EquipmentAddress + primaryMantleTimer)
+        
+    def getSecondaryMantleTimer(self):
+        secondaryMantleTimerFixed = (self.PlayerInfo.SecondaryMantle * 4) + Game.timerFixed
+        secondaryMantleTimer = (self.PlayerInfo.SecondaryMantle * 4) + Game.timerDynamic
+        secondaryMantleCdFixed = (self.PlayerInfo.SecondaryMantle * 4) + Game.cooldownFixed
+        secondaryMantleCd = (self.PlayerInfo.SecondaryMantle * 4) + Game.cooldownDynamic
+        self.PlayerInfo.SecondaryMantleInfo[0] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleCdFixed)
+        self.PlayerInfo.SecondaryMantleInfo[1] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleCd)
+        self.PlayerInfo.SecondaryMantleInfo[2] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleTimerFixed)
+        self.PlayerInfo.SecondaryMantleInfo[3] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleTimer)

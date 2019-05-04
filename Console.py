@@ -17,7 +17,7 @@ import mainResources_rc
 import json
 from Config import *
 
-Version = "2.0.84"
+Version = "2.0.85"
 
 class Ui_Console(object):
     def __init__(self):
@@ -607,13 +607,54 @@ class Ui_Console(object):
             self.thirdMonsterInfo()
             self.updateFertilizerOverlay()
             self.updatePrimaryMantle()
+            self.updateSecondaryMantle()
         QtCore.QTimer.singleShot(1, self.UpdateOverlay)
 
     def updatePrimaryMantle(self):
-        if self.OverlayUI.Enabled:
-            pass
+        if self.OverlayUI.PrimaryMantleEnabled:
+            if 0 < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[1] < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[0]:
+                fixedCd = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[0]
+                cd = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[1]
+                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.PrimaryMantle]
+                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.PrimaryMantle, "primary")
+                self.OverlayUI.updatePrimaryMantleBar(fixedCd-cd, fixedCd)
+                self.OverlayUI.updatePrimaryMantleName(mantleName, cd)
+                self.OverlayUI.showPrimaryMantle()
+            elif 0 < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[3] < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[2]:
+                fixedTimer = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[2]
+                timer = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[3]
+                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.PrimaryMantle]
+                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.PrimaryMantle, "primary")
+                self.OverlayUI.updatePrimaryMantleBar(timer, fixedTimer)
+                self.OverlayUI.updatePrimaryMantleName(mantleName, timer)
+                self.OverlayUI.showPrimaryMantle()
+            else:
+                self.OverlayUI.hidePrimaryMantle()
         else:
             self.OverlayUI.hidePrimaryMantle()
+
+    def updateSecondaryMantle(self):
+        if self.OverlayUI.SecondaryMantleEnabled:
+            if 0 < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[1] < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[0]:
+                fixedCd = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[0]
+                cd = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[1]
+                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.SecondaryMantle]
+                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.SecondaryMantle, "secondary")
+                self.OverlayUI.updateSecondaryMantleBar(fixedCd-cd, fixedCd)
+                self.OverlayUI.updateSecondaryMantleName(mantleName, cd)
+                self.OverlayUI.showSecondaryMantle()
+            elif 0 < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[3] < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[2]:
+                fixedTimer = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[2]
+                timer = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[3]
+                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.SecondaryMantle]
+                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.SecondaryMantle, "secondary")
+                self.OverlayUI.updateSecondaryMantleBar(timer, fixedTimer)
+                self.OverlayUI.updateSecondaryMantleName(mantleName, timer)
+                self.OverlayUI.showSecondaryMantle()
+            else:
+                self.OverlayUI.hideSecondaryMantle()
+        else:
+            self.OverlayUI.hideSecondaryMantle()
 
     def updateFertilizerOverlay(self):
         if self.OverlayUI.FertilizerWidgetEnabled and self.MHWPresence.PlayerInfo.ZoneID in self.MHWPresence.NoMonsterZones and len(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers) == 4 and self.MHWPresence.Scanning:
