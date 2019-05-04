@@ -21,7 +21,7 @@ Shows monsters name, current health, total health and has a health bar.
 ### Harvest Box
 Shows the fertilizer names and the amount you have active, total items in harvest box. It only appears when in no monster areas such as Astera, Gathering Hub, etc.
 
-### Mantles Cooldown (Not done yet)
+### Mantles Cooldown
 Shows the mantles cooldown and timer when wearing one, this widget only appears when the cooldown and timer are actually running.
 
 ### More widgets and info to be added soon...

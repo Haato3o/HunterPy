@@ -760,8 +760,8 @@ class Ui_OverlayWindow(object):
                 #### HIDE WIDGETS #####
                 self.hideMonstersWidget()
                 self.hideFertilizerWindow()
-                #self.hidePrimaryMantle()
-                #self.hideSecondaryMantle()
+                self.hidePrimaryMantle()
+                self.hideSecondaryMantle()
 
         def showMonstersWidget(self):
                 self.monsterHealth.show()
