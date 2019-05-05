@@ -802,7 +802,7 @@ def MainUp():
     config = Config()
     config.LoadConfig()
     if config.Config["HunterPy"]["Update"]["Enabled"]:
-        subprocess.Popen(f"update.exe {Version}", shell=True)
+        subprocess.Popen(f'update.exe {Version} {config.Config["HunterPy"]["Update"]["Branch"]}', shell=True)
         sys.exit()
     else:
         Main("notupdated")
