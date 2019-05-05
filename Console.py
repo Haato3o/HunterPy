@@ -17,7 +17,7 @@ import mainResources_rc
 import json
 from Config import *
 
-Version = "2.0.85"
+Version = "2.0.86"
 
 class Ui_Console(object):
     def __init__(self):
@@ -612,22 +612,26 @@ class Ui_Console(object):
 
     def updatePrimaryMantle(self):
         if self.OverlayUI.PrimaryMantleEnabled:
+            try:
+                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.PrimaryMantle]
+            except:
+                mantleName = None
             if 0 < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[1] < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[0]:
-                fixedCd = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[0]
-                cd = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[1]
-                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.PrimaryMantle]
-                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.PrimaryMantle, "primary")
-                self.OverlayUI.updatePrimaryMantleBar(fixedCd-cd, fixedCd)
-                self.OverlayUI.updatePrimaryMantleName(mantleName, cd)
-                self.OverlayUI.showPrimaryMantle()
+                if self.OverlayUI.mantleName.text() != f"{mantleName} ({int(self.MHWPresence.PlayerInfo.PrimaryMantleInfo[1])})": # Only update widget if the text is different. This reduces CPU usage by A LOT
+                    fixedCd = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[0]
+                    cd = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[1]
+                    self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.PrimaryMantle, "primary")
+                    self.OverlayUI.updatePrimaryMantleBar(fixedCd-cd, fixedCd)
+                    self.OverlayUI.updatePrimaryMantleName(mantleName, cd)
+                    self.OverlayUI.showPrimaryMantle()
             elif 0 < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[3] < self.MHWPresence.PlayerInfo.PrimaryMantleInfo[2]:
-                fixedTimer = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[2]
-                timer = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[3]
-                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.PrimaryMantle]
-                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.PrimaryMantle, "primary")
-                self.OverlayUI.updatePrimaryMantleBar(timer, fixedTimer)
-                self.OverlayUI.updatePrimaryMantleName(mantleName, timer)
-                self.OverlayUI.showPrimaryMantle()
+                if self.OverlayUI.mantleName.text() != f"{mantleName} ({int(self.MHWPresence.PlayerInfo.PrimaryMantleInfo[3])})":
+                    fixedTimer = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[2]
+                    timer = self.MHWPresence.PlayerInfo.PrimaryMantleInfo[3]
+                    self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.PrimaryMantle, "primary")
+                    self.OverlayUI.updatePrimaryMantleBar(timer, fixedTimer)
+                    self.OverlayUI.updatePrimaryMantleName(mantleName, timer)
+                    self.OverlayUI.showPrimaryMantle()
             else:
                 self.OverlayUI.hidePrimaryMantle()
         else:
@@ -635,22 +639,26 @@ class Ui_Console(object):
 
     def updateSecondaryMantle(self):
         if self.OverlayUI.SecondaryMantleEnabled:
+            try:
+                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.SecondaryMantle]
+            except:
+                mantleName = None
             if 0 < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[1] < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[0]:
-                fixedCd = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[0]
-                cd = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[1]
-                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.SecondaryMantle]
-                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.SecondaryMantle, "secondary")
-                self.OverlayUI.updateSecondaryMantleBar(fixedCd-cd, fixedCd)
-                self.OverlayUI.updateSecondaryMantleName(mantleName, cd)
-                self.OverlayUI.showSecondaryMantle()
+                if self.OverlayUI.secondaryMantleName.text() != f"{mantleName} ({int(self.MHWPresence.PlayerInfo.SecondaryMantleInfo[1])})":
+                    fixedCd = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[0]
+                    cd = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[1]
+                    self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.SecondaryMantle, "secondary")
+                    self.OverlayUI.updateSecondaryMantleBar(fixedCd-cd, fixedCd)
+                    self.OverlayUI.updateSecondaryMantleName(mantleName, cd)
+                    self.OverlayUI.showSecondaryMantle()
             elif 0 < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[3] < self.MHWPresence.PlayerInfo.SecondaryMantleInfo[2]:
-                fixedTimer = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[2]
-                timer = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[3]
-                mantleName = self.MHWPresence.MantleIds[self.MHWPresence.PlayerInfo.SecondaryMantle]
-                self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.SecondaryMantle, "secondary")
-                self.OverlayUI.updateSecondaryMantleBar(timer, fixedTimer)
-                self.OverlayUI.updateSecondaryMantleName(mantleName, timer)
-                self.OverlayUI.showSecondaryMantle()
+                if self.OverlayUI.secondaryMantleName.text() != f"{mantleName} ({int(self.MHWPresence.PlayerInfo.SecondaryMantleInfo[3])})":
+                    fixedTimer = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[2]
+                    timer = self.MHWPresence.PlayerInfo.SecondaryMantleInfo[3]
+                    self.OverlayUI.setColorDependingOnMantle(self.MHWPresence.PlayerInfo.SecondaryMantle, "secondary")
+                    self.OverlayUI.updateSecondaryMantleBar(timer, fixedTimer)
+                    self.OverlayUI.updateSecondaryMantleName(mantleName, timer)
+                    self.OverlayUI.showSecondaryMantle()
             else:
                 self.OverlayUI.hideSecondaryMantle()
         else:
@@ -791,8 +799,13 @@ def GetNewUpdater():
         u.close()
 
 def MainUp():
-    subprocess.Popen(f"update.exe {Version}", shell=True)
-    sys.exit()
+    config = Config()
+    config.LoadConfig()
+    if config.Config["HunterPy"]["Update"]["Enabled"]:
+        subprocess.Popen(f"update.exe {Version}", shell=True)
+        sys.exit()
+    else:
+        Main("notupdated")
 
 def Main(arg):
     app = QtWidgets.QApplication(sys.argv)
@@ -805,7 +818,7 @@ def Main(arg):
     else:
         ui.JustUpdated = False
     ui.checkIfJustUpdated()
-    Console.show()
+    Console.showNormal()
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

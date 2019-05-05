@@ -46,11 +46,11 @@ class IDS: # Countains every id for stuff in the game, might remake it later to 
         17 : "Main Menu",
         8 : "Special Arena",
         10 : "Confluence of Fates",
-        11 : "Gathering HUB",
+        11 : "Gathering Hub",
         12 : "Caverns of El Dorado",
         15 : "My Room",
         18 : "Elder's Recess",
-        21 : "Gathering HUB", # During blossom event
+        21 : "Gathering Hub", # During blossom event
         23 : "Training area",
         23.1 : "Arena",
         24 : "Research Base",
@@ -97,6 +97,22 @@ class IDS: # Countains every id for stuff in the game, might remake it later to 
         "em105_00" : "Xeno'Jiiva",
         "em106_00" : "Zorah Magdaros"
     }
+    Weapons = {
+        0 : "Greatsword",
+        1 : "Sword and Shield",
+        2 : "Dual Blades",
+        3 : "Long Sword",
+        4 : "Hammer",
+        5 : "Hunting Horn",
+        6 : "Lance",
+        7 : "GunLance",
+        8 : "Switch Axe",
+        9 : "Charge Blade",
+        10 : "Insect Glaive",
+        11 : "Bow",
+        12 : "Heavy Bowgun",
+        13 : "Light Bowgun"
+    }
 
 
 class Player: # player class
@@ -105,6 +121,8 @@ class Player: # player class
         self.Level = 0 # Player level
         self.ZoneID = 0 # Player zone
         self.LastZoneID = 0 # player last zone
+        self.Weapon_id = None # Weapon id
+        self.Weapon_name = "" # Weapon name
         self.ZoneName = "" # zone name
         self.SessionID = "" # session id (the one you use to invite friends to your session)
         self.HarvestedItemsCounter = 0 # amount of items in harvest box
@@ -132,6 +150,7 @@ class Game:
     MonsterOffset = 0x48525D0 # monster offset
     SessionOffset = 0x0485A430 # Session id offset
     EquipmentOffset = 0x03AC2958 # Equipment container offset
+    WeaponOffset = 0x03B5FF08 # Weapon offset
     cooldownFixed = 0x9BC
     cooldownDynamic = 0x96C
     timerFixed = 0xAAC
@@ -158,8 +177,8 @@ class Game:
             self.getPlayerLevel()
             self.getPlayerName()
             self.getSessionID()
+            self.GetPlayerWeapon()
             self.getFertilizerCount()
-            self.Log(f"{self.PlayerInfo.LastZoneID} -> {self.PlayerInfo.ZoneID}\n")
             self.GetEquipmentAddress()
             self.GetEquippedMantlesIDs()
             self.getMantlesTimer()
@@ -187,7 +206,7 @@ class Game:
 
     def getPlayerName(self):
         self.PlayerInfo.Name = self.MemoryReader.readString(Game.levelAddress-64, 20).decode().strip('\x00')
-        self.Log(f"PLAYER NAME: {self.PlayerInfo.Name} ({hex(Game.levelAddress-64)})", 1)
+        self.Log(f"PLAYER NAME: {self.PlayerInfo.Name} ({hex(Game.levelAddress-64)})")
 
     def getPlayerLevel(self):
         Address = Game.baseAddress + Game.LevelOffset
@@ -196,7 +215,7 @@ class Game:
         ptrValue = self.MemoryReader.readInteger(ptrAddress)
         Game.levelAddress = ptrValue + 0x68
         self.PlayerInfo.Level = self.MemoryReader.readInteger(ptrValue + 0x68)
-        self.Log(f'HUNTER RANK: {self.PlayerInfo.Level} ({hex(ptrValue+0x68)})', 2)
+        self.Log(f'HUNTER RANK: {self.PlayerInfo.Level} ({hex(ptrValue+0x68)})')
 
     def getPlayerZoneID(self):
         Address = Game.baseAddress + Game.ZoneOffset
@@ -211,7 +230,7 @@ class Game:
             self.UpdateLastZoneID()
             self.PlayerInfo.ZoneID = ZoneID
         self.getPlayerZoneNameByID()
-        self.Log(f'ZONE NAME: {self.PlayerInfo.ZoneName} | ZONE ID: {self.PlayerInfo.ZoneID} ({hex(sValue + 0x2B0)})', 3)
+        self.Log(f'ZONE NAME: {self.PlayerInfo.ZoneName} | ZONE ID: {self.PlayerInfo.ZoneID} ({hex(sValue + 0x2B0)})')
         
     def getPlayerZoneNameByID(self):
         self.PlayerInfo.ZoneName = IDS.Zones.get(self.PlayerInfo.ZoneID)
@@ -357,7 +376,7 @@ class Game:
         sValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         SessionID = self.MemoryReader.readString(sValue+0x3C8, 12)
         self.PlayerInfo.SessionID = SessionID.decode()
-        self.Log(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})\n')
+        self.Log(f'Session ID: {self.PlayerInfo.SessionID} ({hex(sValue+0x3C8)})')
 
     def getFertilizerCount(self):
         self.PlayerInfo.HarvestBoxFertilizers = []
@@ -388,7 +407,7 @@ class Game:
         self.PlayerInfo.LastZoneID = self.PlayerInfo.ZoneID 
 
     # Since I have no idea how to detect which monster is being targetted
-    # I'm gonna just make this workaround.
+    # I'm gonna just make this "algorithm".
     def PredictTarget(self):
         if self.PlayerInfo.ZoneID in IDS.NoMonstersZones:
             self.PrimaryMonster.isTarget = False
@@ -481,3 +500,13 @@ class Game:
         self.PlayerInfo.SecondaryMantleInfo[1] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleCd)
         self.PlayerInfo.SecondaryMantleInfo[2] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleTimerFixed)
         self.PlayerInfo.SecondaryMantleInfo[3] = self.MemoryReader.readFloat(self.EquipmentAddress + secondaryMantleTimer)
+
+    def GetPlayerWeapon(self):
+        Address = Game.baseAddress + Game.WeaponOffset
+        offsets = [0x70, 0x90, 0x270, 0x8]
+        WeaponIdAddress = self.MemoryReader.GetMultilevelPtr(Address, offsets)
+        WeaponId = self.MemoryReader.readInteger(WeaponIdAddress+0x2B8)
+        WeaponName = IDS.Weapons.get(WeaponId)
+        self.PlayerInfo.Weapon_id= WeaponId
+        self.PlayerInfo.Weapon_name = WeaponName
+        self.Log(f"Weapon type: {WeaponName} | id: {WeaponId}\n")

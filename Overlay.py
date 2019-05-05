@@ -17,18 +17,18 @@ class Styles:
                 3 : "#8d8d8d",
                 4 : "#a0fff2",
                 5 : "#42faad",
-                6 : "#e0175a",
+                6 : "#d06475",
                 7 : "#17cfe0",
                 8 : "#e4e4e4",
                 9 : "#a0fff2",
                 10 : "#c2c2c2",
                 11 : "#5448f0", 
-                12 : "#487af0",
+                12 : "#878fec",
                 13 : "#e4e4e4",
-                14 : "#e0175a",
+                14 : "#d06475",
                 15 : "#a17bfb",
                 16 : "#e4e4e4",
-                17 : "#e0175a",
+                17 : "#d06475",
                 18 : "#ffd900",
                 19 : "#e4e4e4"
         }
@@ -894,6 +894,9 @@ class Ui_OverlayWindow(object):
                 self.secondaryMantleWidget.hide()
 
         def updatePrimaryMantleName(self, name, timer):
+                _translate = QtCore.QCoreApplication.translate
+                icon = self.GetMantleIcon(name) # get the icon by specialized tool name
+                self.primaryMantleIcon.setText(_translate("OverlayWindow", f"<html><head/><body><p><img src=\":/Overlay/{icon}\"/></p></body></html>")) # change the icon depending on specialized tool type
                 self.mantleName.setText(f"{name} ({int(timer)})")
 
         def updatePrimaryMantleBar(self, current, maxT):
@@ -901,8 +904,19 @@ class Ui_OverlayWindow(object):
                 self.primaryMantleTimer.setMaximum(maxT)
 
         def updateSecondaryMantleName(self, name, timer):
+                _translate = QtCore.QCoreApplication.translate
+                icon = self.GetMantleIcon(name)
+                self.secondaryMantleIcon.setText(_translate("OverlayWindow", f"<html><head/><body><p><img src=\":/Overlay/{icon}\"/></p></body></html>"))
                 self.secondaryMantleName.setText(f"{name} ({int(timer)})")
         
         def updateSecondaryMantleBar(self, current, maxT):
                 self.secondaryMantleTimer.setProperty("value", current)
                 self.secondaryMantleTimer.setMaximum(maxT)
+
+        def GetMantleIcon(self, mantle):
+                if mantle.lower().endswith("booster"):
+                        return "boosterIcon.png"
+                elif mantle.lower().endswith("mantle"):
+                        return "mantleicon.png"
+                else:
+                        return "assassinMantleIcon.png"

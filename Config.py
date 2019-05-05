@@ -5,6 +5,12 @@ import json
 class Config:
     Path = "config.json"
     Layout = {
+        "HunterPy" : {
+            "Update" : {
+                "Enabled" : True,
+                "Branch" : "master"
+            }
+        },
         "Overlay" : {
             "Enabled" : False,
             "Position": [0, 0],

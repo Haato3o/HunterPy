@@ -106,6 +106,7 @@ class MHWPresence:
         if self.Enabled == False:
             self.Presence.clearPresence()
             return
+        formatWeaponName = lambda name: name.lower().replace(" ", "-") if name != None else "hunter-rank" # quick function to format the weapon name for the smaller image in rich presence
         self.Presence.changePresence(
             pid = self.GamePID,
             details = self.formatAndGetDetails(),
@@ -113,7 +114,7 @@ class MHWPresence:
             start = self.ElapsedTime,
             large_text = self.PlayerInfo.ZoneName,
             large_image = self.getLocationImage() if self.PlayerInfo.ZoneID in HunterPy.IDS.Zones else "main-menu",
-            small_image = 'hunter-rank',
+            small_image = formatWeaponName(self.PlayerInfo.Weapon_name),
             small_text = f'{self.PlayerInfo.Name} | Hunter Rank: {self.PlayerInfo.Level}'
         )
 

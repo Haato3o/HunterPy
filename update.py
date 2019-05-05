@@ -18,8 +18,8 @@ import subprocess
 import time
 
 class Update:
-    Server = "https://bitbucket.org/Haato/hunterpy/raw/master/" # URL Base for the project
-    def __init__(self, version):
+    Server = "https://bitbucket.org/Haato/hunterpy/raw/" # URL Base for the project
+    def __init__(self, version, branch):
         self.LocalVersion = version # Version of HunterPy in the user computer, passed as an args
         self.LatestVersion = "unknown" # Online version of HunterPy, it's in the project url
         self.hasInternet = False
@@ -29,6 +29,8 @@ class Update:
         self.UpdateWindow = None
         self.Ui = None
         self.Progress = 0
+        self.Branch = branch
+        Update.Server = f"{Update.Server}{branch}/" # Update server url depending on branch
 
     def start(self):
         self.OpenUpdateWindow()
@@ -52,7 +54,7 @@ class Update:
 
     def CheckVersionOnline(self):
         try:
-            self.Ui.updateText.setText("Checking version online...")
+            self.Ui.updateText.setText(f"Checking branch: {self.Branch}...")
             onlineVersion = requests.request('get', Update.Server+"version.txt", timeout=3)
             self.hasInternet = True
             self.LatestVersion = onlineVersion.text
@@ -189,6 +191,6 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         sys.exit()
     else:
-        update = Update(sys.argv[1])
+        update = Update(sys.argv[1], sys.argv[2])
         update.start()
 
