@@ -14,10 +14,11 @@ import os
 import subprocess
 import sys
 import mainResources_rc
-import json
 from Config import *
 
-Version = "2.0.86"
+Version = "2.0.87"
+
+
 
 class Ui_Console(object):
     def __init__(self):
@@ -519,6 +520,7 @@ class Ui_Console(object):
         self.trayIcon = QtWidgets.QSystemTrayIcon(QtGui.QIcon("icon.ico"), parent=self.Console)
         self.trayIcon.activated.connect(self.showMainWindow)
         self.trayIcon.show()
+        
 
         ### Rich presence checkbox
         if self.MHWPresence.Enabled:
@@ -666,7 +668,7 @@ class Ui_Console(object):
 
     def updateFertilizerOverlay(self):
         if self.OverlayUI.FertilizerWidgetEnabled and self.MHWPresence.PlayerInfo.ZoneID in self.MHWPresence.NoMonsterZones and len(self.MHWPresence.PlayerInfo.HarvestBoxFertilizers) == 4 and self.MHWPresence.Scanning:
-            if self.MHWPresence.PlayerInfo.ZoneName == "Main Menu": # hides harvest window in main menu, needs this because Main Menu is a "NoMonsterZone"
+            if self.MHWPresence.PlayerInfo.ZoneName in ["Main Menu", "Training area"]: # hides harvest window in main menu, needs this because Main Menu is a "NoMonsterZone"
                 self.OverlayUI.hideFertilizerWindow()
             else:
                 self.OverlayUI.showFertilizerWindow()
@@ -801,8 +803,9 @@ def GetNewUpdater():
 def MainUp():
     config = Config()
     config.LoadConfig()
+    checkIfBranchExist = lambda name: name if name in ["BETA", "master"] else "master" # quick workaround to avoid update.exe crash
     if config.Config["HunterPy"]["Update"]["Enabled"]:
-        subprocess.Popen(f'update.exe {Version} {config.Config["HunterPy"]["Update"]["Branch"]}', shell=True)
+        subprocess.Popen(f'update.exe {Version} {checkIfBranchExist(config.Config["HunterPy"]["Update"]["Branch"])}', shell=True)
         sys.exit()
     else:
         Main("notupdated")
