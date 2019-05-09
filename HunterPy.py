@@ -144,17 +144,17 @@ class Monster: # Monster class, each monster will initialize one
 
 class Game:
     baseAddress = 0x140000000 # MonsterHunterWorld.exe base address
-    LevelOffset = 0x3B5FEC8    # Level offset
+    LevelOffset = 0x03B3D2F8    # Level offset
     levelAddress = 0xFFFFFF     # Level address used to get name
-    ZoneOffset = 0x04852910  # Zone ID offset
-    MonsterOffset = 0x48525D0 # monster offset
-    SessionOffset = 0x0485A430 # Session id offset
-    EquipmentOffset = 0x03AC2958 # Equipment container offset
-    WeaponOffset = 0x03B5FF08 # Weapon offset
-    cooldownFixed = 0x9BC
-    cooldownDynamic = 0x96C
-    timerFixed = 0xAAC
-    timerDynamic = 0xA5C
+    ZoneOffset = 0x048E3EA0  # Zone ID offset
+    MonsterOffset = 0x48D1710 # monster offset
+    SessionOffset = 0x048D95E0 # Session id offset
+    EquipmentOffset = 0x03BDAF38 # Equipment container offset
+    WeaponOffset = 0x03BDEE98 # Weapon offset
+    cooldownFixed = 0x9EC
+    cooldownDynamic = 0x99C
+    timerFixed = 0xADC
+    timerDynamic = 0xA8C
 
     def __init__(self, pid):
         # Scanner stuff
@@ -210,16 +210,16 @@ class Game:
 
     def getPlayerLevel(self):
         Address = Game.baseAddress + Game.LevelOffset
-        fValue = self.MemoryReader.readInteger(Address)
-        ptrAddress = fValue + 144
-        ptrValue = self.MemoryReader.readInteger(ptrAddress)
-        Game.levelAddress = ptrValue + 0x68
-        self.PlayerInfo.Level = self.MemoryReader.readInteger(ptrValue + 0x68)
-        self.Log(f'HUNTER RANK: {self.PlayerInfo.Level} ({hex(ptrValue+0x68)})')
+        offsets = [0x70, 0x58, 0x20, 0x58]
+        fValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
+        levelValue = self.MemoryReader.readInteger(fValue + 0x108)
+        Game.levelAddress = fValue + 0x108
+        self.PlayerInfo.Level = levelValue
+        self.Log(f'HUNTER RANK: {self.PlayerInfo.Level} ({hex(fValue + 0x108)})')
 
     def getPlayerZoneID(self):
         Address = Game.baseAddress + Game.ZoneOffset
-        offsets = [0x78, 0x440, 0x8, 0x70]
+        offsets = [0x3F0, 0x18, 0x8, 0x70]
         sValue = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         ZoneID = self.MemoryReader.readInteger(sValue + 0x2B0)
         if ZoneID == 23 and self.ThirtiaryMonster.TotalHP > 100: # Checks if there's a monster in the map, if so then it's an arena
@@ -381,7 +381,7 @@ class Game:
     def getFertilizerCount(self):
         self.PlayerInfo.HarvestBoxFertilizers = []
         Address = Game.levelAddress
-        firstFertilizerAddress = Address+0x673EC
+        firstFertilizerAddress = Address+0x6740c
         secondFertilizerAddress = firstFertilizerAddress+0x10
         thirdFertilizerAddress = secondFertilizerAddress+0x10
         fourthFertilizerAddress = thirdFertilizerAddress+0x10
@@ -473,7 +473,7 @@ class Game:
 
     def GetEquipmentAddress(self):
         Address = Game.baseAddress + Game.EquipmentOffset
-        offsets = [0xA0, 0x70, 0x1C0, 0xB0]
+        offsets = [0x678, 0x18, 0x258, 0xB8]
         self.EquipmentAddress = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         self.Log(f"Equipment address: {hex(self.EquipmentAddress)}")
     
@@ -503,7 +503,7 @@ class Game:
 
     def GetPlayerWeapon(self):
         Address = Game.baseAddress + Game.WeaponOffset
-        offsets = [0x70, 0x90, 0x270, 0x8]
+        offsets = [0x60, 0x20, 0x1C0, 0xB8]
         WeaponIdAddress = self.MemoryReader.GetMultilevelPtr(Address, offsets)
         WeaponId = self.MemoryReader.readInteger(WeaponIdAddress+0x2B8)
         WeaponName = IDS.Weapons.get(WeaponId)
