@@ -61,19 +61,20 @@ class MHWPresence:
             return None
         if self.PlayerInfo.ZoneName == "Main Menu" or self.PlayerInfo.ZoneID in noMonsterZones:
             return "Idle"
+        hp = self.getTargetHP()
         if self.Player.PrimaryMonster.isTarget:
-            return f"Hunting {self.Player.PrimaryMonster.Name}".replace("None", "Monster")
+            return f"Hunting {self.Player.PrimaryMonster.Name} {hp}".replace("None", "Monster")
         elif self.Player.SecondaryMonster.isTarget:
-            return f"Hunting {self.Player.SecondaryMonster.Name}".replace("None", "Monster")
+            return f"Hunting {self.Player.SecondaryMonster.Name} {hp}".replace("None", "Monster")
         elif self.Player.ThirtiaryMonster.isTarget:
-            return f"Hunting {self.Player.ThirtiaryMonster.Name}".replace("None", "Monster")
+            return f"Hunting {self.Player.ThirtiaryMonster.Name} {hp}".replace("None", "Monster")
         else:
             return f"Exploring"
 
     def getTargetHP(self):
         noMonsterZones = HunterPy.IDS.NoMonstersZones
         if self.Player.PlayerInfo.ZoneID in noMonsterZones:
-            return None
+            return ""
         if self.Player.PrimaryMonster.isTarget:
             curHP = self.Player.PrimaryMonster.CurrentHP
             totalHp = self.Player.PrimaryMonster.TotalHP
@@ -84,11 +85,11 @@ class MHWPresence:
             curHP = self.Player.ThirtiaryMonster.CurrentHP
             totalHp = self.Player.ThirtiaryMonster.TotalHP
         else:
-            return None
+            return ""
         try:
-            return f'HP: {int(curHP/totalHp*100)}%'
+            return f'({int(curHP/totalHp*100)}%)'
         except:
-            return None
+            return ""
 
     def getElapsedTime(self):
         if self.PlayerInfo.LastZoneID != self.PlayerInfo.ZoneID and self.PlayerInfo.ZoneID not in self.NoMonsterZones and self.ElapsedTime == None:
@@ -98,6 +99,12 @@ class MHWPresence:
                 self.ElapsedTime = int(time.time())
         elif self.PlayerInfo.ZoneID in self.NoMonsterZones or self.PlayerInfo.ZoneID == 0:
             self.ElapsedTime = None
+
+    def getState(self):
+        if len(self.PlayerInfo.PartyMembers) > 0:
+            return "In Party"
+        else:
+            return "Playing Solo"
 
     def presenceUpdate(self):
         self.getElapsedTime()
@@ -110,7 +117,8 @@ class MHWPresence:
         self.Presence.changePresence(
             pid = self.GamePID,
             details = self.formatAndGetDetails(),
-            state = self.getTargetHP(),
+            state = self.getState(),
+            party_size = [len(self.PlayerInfo.PartyMembers), 4],
             start = self.ElapsedTime,
             large_text = self.PlayerInfo.ZoneName,
             large_image = self.getLocationImage() if self.PlayerInfo.ZoneID in HunterPy.IDS.Zones else "main-menu",
