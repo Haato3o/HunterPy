@@ -520,10 +520,11 @@ class Game:
     def GetPartyMembers(self):
         Address = Game.BASE_ADDRESS + Game.PARTY_OFFSET
         offsets = [0x80, 0x88, 0x30, 0xF8]
-        PartyContainer = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets) + 0x54A45
+        PartyContainer = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets) + 0x54AE5
         PartyMax = 4 # Max players a party can have
+        self.PlayerInfo.PartyMembers = []
         for member in range(PartyMax):
-            PartyMemberAddress = PartyContainer + (member * 0x11)
+            PartyMemberAddress = PartyContainer + (member * 0x21)
             Name = self.GetPartyMemberName(PartyMemberAddress)
             if Name[0] == "\x00": 
                 # if the first byte of the name is null then that party space is empty, 
@@ -534,5 +535,8 @@ class Game:
                 self.PlayerInfo.PartyMembers.append(Name.strip("\x00"))
     
     def GetPartyMemberName(self, address):
-        PartyMemberName = self.MemoryReader.READ_STRING(address, 32)
-        return PartyMemberName.decode()
+        try:
+            PartyMemberName = self.MemoryReader.READ_STRING(address, 32).decode()
+        except:
+            PartyMemberName = "\x00"
+        return PartyMemberName

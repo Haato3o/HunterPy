@@ -12,3 +12,5 @@ consoleNew.py
 overlayNew.py
 *.qrc
 *.psd
+
+BytesScanner.py

@@ -9,7 +9,6 @@ class MHWPresence:
     def __init__(self):
         self.Scanning = False
         self.GamePID = None
-        #self.waitGameOpen()
         self.ConsoleMessage = []
         self.ThreadScanGamePID()
         self.Player = None
@@ -118,7 +117,7 @@ class MHWPresence:
             pid = self.GamePID,
             details = self.formatAndGetDetails(),
             state = self.getState(),
-            party_size = [len(self.PlayerInfo.PartyMembers), 4],
+            party_size = [len(self.PlayerInfo.PartyMembers) if len(self.PlayerInfo.PartyMembers) > 1 else 1, 4],
             start = self.ElapsedTime,
             large_text = self.PlayerInfo.ZoneName,
             large_image = self.getLocationImage() if self.PlayerInfo.ZoneID in HunterPy.IDS.Zones else "main-menu",
