@@ -16,7 +16,7 @@ import sys
 import mainResources_rc
 from Config import *
 
-Version = "2.0.90"
+Version = "2.0.91"
 
 
 
@@ -594,12 +594,13 @@ class Ui_Console(object):
 
 
     def GetChangelog(self):
+        _translate = QtCore.QCoreApplication.translate
         changelog = self.OpenChangelogAndReturnBytes()
         self.ConsoleBox.setGraphicsEffect(QtWidgets.QGraphicsBlurEffect())
         self.enableOverlay.setGraphicsEffect(QtWidgets.QGraphicsBlurEffect())
         self.enableRichPresence.setGraphicsEffect(QtWidgets.QGraphicsBlurEffect())
         self.hunterPyLogo.setGraphicsEffect(QtWidgets.QGraphicsBlurEffect())
-        self.changelogText.setText(changelog)
+        self.changelogText.setText(_translate("Console", changelog))
 
     def UpdateOverlay(self):
         if self.OverlayUI.Enabled and self.MHWPresence.Scanning:
@@ -817,7 +818,7 @@ def Main(arg):
     ui.setupUi(Console)
     if arg == "updated":
         ui.JustUpdated = True
-        GetNewUpdater()
+        #GetNewUpdater()
     else:
         ui.JustUpdated = False
     ui.checkIfJustUpdated()

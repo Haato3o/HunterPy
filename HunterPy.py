@@ -98,7 +98,8 @@ class IDS: # Countains every id for stuff in the game, might remake it later to 
         "em115_00" : "Vaal Hazak",
         "em105_00" : "Xeno'Jiiva",
         "em106_00" : "Zorah Magdaros",
-        "em127_00" : "Leshen" # The witcher 3: Wild Hunt event
+        "em127_00" : "Leshen", # The witcher 3: Wild Hunt event
+        "em127_01" : "Ancient Leshen" # The witcher 3: Wild Hunt event p2
     }
     Weapons = {
         0 : "Greatsword",

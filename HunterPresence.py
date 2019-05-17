@@ -100,7 +100,7 @@ class MHWPresence:
             self.ElapsedTime = None
 
     def getState(self):
-        if len(self.PlayerInfo.PartyMembers) > 0:
+        if len(self.PlayerInfo.PartyMembers) > 1:
             return "In Party"
         else:
             return "Playing Solo"
