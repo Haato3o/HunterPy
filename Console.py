@@ -16,7 +16,7 @@ import sys
 import mainResources_rc
 from Config import *
 
-Version = "2.0.91"
+Version = "2.1.0"
 
 
 
@@ -818,7 +818,7 @@ def Main(arg):
     ui.setupUi(Console)
     if arg == "updated":
         ui.JustUpdated = True
-        #GetNewUpdater()
+        GetNewUpdater()
     else:
         ui.JustUpdated = False
     ui.checkIfJustUpdated()

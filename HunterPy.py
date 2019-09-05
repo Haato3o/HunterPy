@@ -149,14 +149,14 @@ class Monster: # Monster class, each monster will initialize one
 
 class Game:
     BASE_ADDRESS = 0x140000000 # MonsterHunterWorld.exe base address
-    LEVEL_OFFSET = 0x03B3D2F8    # Level offset
+    LEVEL_OFFSET = 0x0490C810    # Level offset
     LEVEL_ADDRESS = 0xFFFFFF     # Level address used to get name
     PARTY_OFFSET = 0x03C01D40 # Party member names
-    ZONE_OFFSET = 0x048E3EA0  # Zone ID offset
-    MONSTER_OFFSET = 0x48D1710 # monster offset
+    ZONE_OFFSET = 0x048EF560 # Zone ID offset
+    MONSTER_OFFSET = 0x48DCDB8 # monster offset
     SESSION_OFFSET = 0x048D95E0 # Session id offset
-    EQUIPMENT_OFFSET = 0x03B416A8 # Equipment container offset
-    WEAPON_OFFSET = 0x03BDEE98 # Weapon offset
+    EQUIPMENT_OFFSET = 0x03B4CD48 # Equipment container offset
+    WEAPON_OFFSET = 0x03BEA538 # Weapon offset
     cooldownFixed = 0x9EC
     cooldownDynamic = 0x99C
     timerFixed = 0xADC
@@ -217,7 +217,7 @@ class Game:
 
     def getPlayerLevel(self):
         Address = Game.BASE_ADDRESS + Game.LEVEL_OFFSET
-        offsets = [0x70, 0x58, 0x20, 0x58]
+        offsets = [0x58, 0x188, 0x140, 0xD8]
         fValue = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets)
         levelValue = self.MemoryReader.READ_INTEGER(fValue + 0x108)
         Game.LEVEL_ADDRESS = fValue + 0x108
@@ -226,7 +226,7 @@ class Game:
 
     def getPlayerZoneID(self):
         Address = Game.BASE_ADDRESS + Game.ZONE_OFFSET
-        offsets = [0x3F0, 0x18, 0x8, 0x70]
+        offsets = [0x660, 0x28, 0x18, 0x440]
         sValue = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets)
         ZoneID = self.MemoryReader.READ_INTEGER(sValue + 0x2B0)
         if ZoneID == 23 and self.ThirtiaryMonster.TotalHP > 100: # Checks if there's a monster in the map, if so then it's an arena
@@ -480,7 +480,7 @@ class Game:
 
     def GetEquipmentAddress(self):
         Address = Game.BASE_ADDRESS + Game.EQUIPMENT_OFFSET
-        offsets = [0x90, 0x40, 0x470, 0x18]
+        offsets = [0x78, 0x50, 0x40, 0x450]
         self.EquipmentAddress = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets)
         self.Log(f"Equipment address: {hex(self.EquipmentAddress)}")
     
@@ -510,11 +510,11 @@ class Game:
 
     def GetPlayerWeapon(self):
         Address = Game.BASE_ADDRESS + Game.WEAPON_OFFSET
-        offsets = [0x60, 0x20, 0x1C0, 0xB8]
+        offsets = [0x70, 0x5A8, 0x310, 0x148]
         WeaponIdAddress = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets)
         WeaponId = self.MemoryReader.READ_INTEGER(WeaponIdAddress+0x2B8)
         WeaponName = IDS.Weapons.get(WeaponId)
-        self.PlayerInfo.Weapon_id= WeaponId
+        self.PlayerInfo.Weapon_id = WeaponId
         self.PlayerInfo.Weapon_name = WeaponName
         self.Log(f"Weapon type: {WeaponName} | id: {WeaponId}\n")
 
