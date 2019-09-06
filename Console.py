@@ -16,7 +16,7 @@ import sys
 import mainResources_rc
 from Config import *
 
-Version = "2.1.0"
+Version = "2.1.2"
 
 
 

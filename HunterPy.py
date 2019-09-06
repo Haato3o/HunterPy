@@ -149,9 +149,9 @@ class Monster: # Monster class, each monster will initialize one
 
 class Game:
     BASE_ADDRESS = 0x140000000 # MonsterHunterWorld.exe base address
-    LEVEL_OFFSET = 0x0490C810    # Level offset
+    LEVEL_OFFSET = 0x03B48998    # Level offset
     LEVEL_ADDRESS = 0xFFFFFF     # Level address used to get name
-    PARTY_OFFSET = 0x03C01D40 # Party member names
+    PARTY_OFFSET = 0x48DDF20 # Party member names
     ZONE_OFFSET = 0x048EF560 # Zone ID offset
     MONSTER_OFFSET = 0x48DCDB8 # monster offset
     SESSION_OFFSET = 0x048D95E0 # Session id offset
@@ -217,7 +217,7 @@ class Game:
 
     def getPlayerLevel(self):
         Address = Game.BASE_ADDRESS + Game.LEVEL_OFFSET
-        offsets = [0x58, 0x188, 0x140, 0xD8]
+        offsets = [0x70, 0x68, 0x8, 0x20]
         fValue = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets)
         levelValue = self.MemoryReader.READ_INTEGER(fValue + 0x108)
         Game.LEVEL_ADDRESS = fValue + 0x108
@@ -520,8 +520,8 @@ class Game:
 
     def GetPartyMembers(self):
         Address = Game.BASE_ADDRESS + Game.PARTY_OFFSET
-        offsets = [0x80, 0x88, 0x30, 0xF8]
-        PartyContainer = self.MemoryReader.READ_MULTILEVEL_PTR(Address, offsets) + 0x54AE5
+        offsets = [0x0]
+        PartyContainer = self.MemoryReader.READ_LONGLONG(Address) + 0x54A45
         PartyMax = 4 # Max players a party can have
         self.PlayerInfo.PartyMembers = []
         for member in range(PartyMax):
@@ -534,6 +534,7 @@ class Game:
                 continue
             else:
                 self.PlayerInfo.PartyMembers.append(Name.strip("\x00"))
+        self.Log(f"Party: {self.PlayerInfo.PartyMembers}")
     
     def GetPartyMemberName(self, address):
         try:
