@@ -149,14 +149,14 @@ class Monster: # Monster class, each monster will initialize one
 
 class Game:
     BASE_ADDRESS = 0x140000000 # MonsterHunterWorld.exe base address
-    LEVEL_OFFSET = 0x03B48998    # Level offset
+    LEVEL_OFFSET = 0x03B4A278    # Level offset
     LEVEL_ADDRESS = 0xFFFFFF     # Level address used to get name
-    PARTY_OFFSET = 0x48DDF20 # Party member names
-    ZONE_OFFSET = 0x048EF560 # Zone ID offset
-    MONSTER_OFFSET = 0x48DCDB8 # monster offset
+    PARTY_OFFSET = 0x48DF800 # Party member names
+    ZONE_OFFSET = 0x048F0E20 # Zone ID offset
+    MONSTER_OFFSET = 0x48DE698 # monster offset
     SESSION_OFFSET = 0x048D95E0 # Session id offset
-    EQUIPMENT_OFFSET = 0x03B4CD48 # Equipment container offset
-    WEAPON_OFFSET = 0x03BEA538 # Weapon offset
+    EQUIPMENT_OFFSET = 0x03BE71E0 # Equipment container offset
+    WEAPON_OFFSET = 0x03BEBE18 # Weapon offset
     cooldownFixed = 0x9EC
     cooldownDynamic = 0x99C
     timerFixed = 0xADC
